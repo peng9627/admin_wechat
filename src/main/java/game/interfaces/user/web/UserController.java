@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import game.application.user.IUserAppService;
 import game.application.user.IUserParentAppService;
 import game.application.user.representation.UserRepresentation;
+import game.core.common.Constants;
 import game.core.util.CoreHttpUtils;
 import game.core.util.CoreStringUtils;
 import game.interfaces.shared.api.BaseApiController;
@@ -64,22 +65,7 @@ public class UserController extends BaseApiController {
 
             JSONObject userinfoJson = new JSONObject();
             if (!CoreStringUtils.isEmpty(code)) {
-                //万州
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx988152b62477873e&secret=54e1313d48ee0753cec84911a03374ab&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //大众
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxbb4693c82ec025a5&secret=91738db92b736e00fe8dba8fe1e68ab3&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //山城
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx2d4606a7e7af7ba9&secret=3834e71b6b4de2d202b2f0409596d0d4&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //西北
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx24242b2bf731f7d7&secret=81d11ec24e8006c0fbce680da6bbbb2e&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //牡丹江
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx15468dd1bb6be97f&secret=e452c2420fd5ad0a8e56ff1868f2d928&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //江城互娱
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx5f92b5138fa881da&secret=38dccbd677ff14f949a95d53ca7c6fd7&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //盛天互娱
-//                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx8f6bc16c163a4f91&secret=6ecbbb3ee03ae15c07ff6797f429b29d&code=" + code + "&grant_type=authorization_code", "utf-8");
-                //全民互娱
-                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx34e46b11c9b3db48&secret=c8235fb7ff5f3cbc403f799d27397679&code=" + code + "&grant_type=authorization_code", "utf-8");
+                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + Constants.WECHAT_OFFICE_APPID + "&secret=" + Constants.WECHAT_OFFICE_APPSECRET + "&code=" + code + "&grant_type=authorization_code", "utf-8");
                 JSONObject jsonObject = JSON.parseObject(access_token);
                 if (jsonObject.containsKey("access_token")) {
                     String check = CoreHttpUtils.get("https://api.weixin.qq.com/sns/auth?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid"), "utf-8");
@@ -90,22 +76,7 @@ public class UserController extends BaseApiController {
                         userinfoJson = JSON.parseObject(userinfo);
                         System.out.println("userinfoJson--------" + userinfo);
                     } else {
-                        //万州
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx988152b62477873e&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //大众
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wxbb4693c82ec025a5&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //山城
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx2d4606a7e7af7ba9&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //西北
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx24242b2bf731f7d7&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //牡丹江
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx15468dd1bb6be97f&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //江城互娱
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx5f92b5138fa881da&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //盛天互娱
-//                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx8f6bc16c163a4f91&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
-                        //全民互娱
-                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx34e46b11c9b3db48&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
+                        String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + Constants.WECHAT_OFFICE_APPID + "&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
                         jsonObject = JSON.parseObject(refresh);
                         String userinfo = CoreHttpUtils.get("https://api.weixin.qq.com/sns/userinfo?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid") + "&lang=zh_CN", "utf-8");
                         userinfoJson = JSON.parseObject(userinfo);
@@ -128,22 +99,7 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
             if (null != userRepresentation) {
-                //万州
-//                response.sendRedirect("http://gl.zzjhmjg.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //大众
-//                response.sendRedirect("http://dazhonghuyugl.chuangmikeji.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //山城
-//                response.sendRedirect("http://shanchenghuyugl.chuangmikeji.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //西北
-//                response.sendRedirect("http://gl.zhuanxinyu.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //西北
-//                response.sendRedirect("http://gl.mdjpoker.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //江城互娱
-//                response.sendRedirect("http://gl.jingsaibang.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //盛天互娱
-//                response.sendRedirect("http://gl.zmbaobei.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                //全民互娱
-                response.sendRedirect("http://quanmingl.chuangmikeji.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
+                response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
                 return null;
             }
         } catch (Exception e) {
