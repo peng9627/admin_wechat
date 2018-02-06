@@ -80,7 +80,6 @@ public class UserController extends BaseApiController {
 //                String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx8f6bc16c163a4f91&secret=6ecbbb3ee03ae15c07ff6797f429b29d&code=" + code + "&grant_type=authorization_code", "utf-8");
                 //全民互娱
                 String access_token = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx34e46b11c9b3db48&secret=c8235fb7ff5f3cbc403f799d27397679&code=" + code + "&grant_type=authorization_code", "utf-8");
-                System.out.println("access_token=" + access_token);
                 JSONObject jsonObject = JSON.parseObject(access_token);
                 if (jsonObject.containsKey("access_token")) {
                     String check = CoreHttpUtils.get("https://api.weixin.qq.com/sns/auth?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid"), "utf-8");
@@ -126,8 +125,6 @@ public class UserController extends BaseApiController {
 //                SocketRequest socketRequest = new SocketRequest();
 //                socketRequest.setUserId(Integer.parseInt(state));
 //                CoreHttpUtils.urlConnectionByRsa("http://127.0.0.1:10410/1", JSON.toJSONString(socketRequest, ss, features));
-            } else {
-                System.out.println("unionid空");
             }
 //            return new ModelAndView("redirect:/user/person");
             if (null != userRepresentation) {
@@ -148,8 +145,6 @@ public class UserController extends BaseApiController {
                 //全民互娱
                 response.sendRedirect("http://quanmingl.chuangmikeji.com/mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
                 return null;
-            } else {
-                System.out.println("userRepresentation空");
             }
         } catch (Exception e) {
             e.printStackTrace();
