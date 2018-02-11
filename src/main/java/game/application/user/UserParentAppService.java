@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by pengyi
  * Date : 2016/4/19.
@@ -46,4 +48,20 @@ public class UserParentAppService implements IUserParentAppService {
         }
         return mappingService.map(userParentService.byUserId(userId), UserParentRepresentation.class, false);
     }
+
+    @Override
+    public void lastDayRebate() {
+        userParentService.lastDayRebate();
+    }
+
+    @Override
+    public List<Integer> userIds() {
+        return userParentService.userIds();
+    }
+
+    @Override
+    public void lastDayRebateCommission(Integer userId) {
+        userParentService.lastDayRebateCommission(userId);
+    }
+
 }

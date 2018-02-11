@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import game.application.commissiondetails.command.CreateCommand;
 import game.core.enums.FlowType;
 import game.core.pay.GameServer;
-import game.core.util.CoreHttpUtils;
-import game.core.util.CoreStringUtils;
 import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by pengyi
@@ -40,11 +39,20 @@ public class UserParentService implements IUserParentService {
         if (null == userParent) {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
-                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 3);
+                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 2);
             } else {
-                userParent = new UserParent(userId, parent, null, null, 3);
+                myParent = new UserParent(parent, null, null, null, 2);
+                userParentRepository.save(myParent);
+                userParent = new UserParent(userId, parent, null, null, 2);
             }
             userParentRepository.save(userParent);
+        }
+
+        int parentSize = byParent(parent).size();
+        if (5 == parentSize) {
+            UserParent myParent = userParentRepository.searchByUserId(parent);
+            myParent.setLevel(1);
+            userParentRepository.save(myParent);
         }
     }
 
@@ -58,97 +66,148 @@ public class UserParentService implements IUserParentService {
         JSONArray notice = new JSONArray();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Float card = jsonObject.getFloatValue("card");
             UserParent userParent = userParentRepository.searchByUserId(jsonObject.getIntValue("userId"));
             if (null != userParent) {
-                Integer a = userParent.getA();
-                Integer b = userParent.getB();
                 Integer parent = userParent.getParent();
+                userParent.setTotalRebate(userParent.getTotalRebate().add(BigDecimal.valueOf(card)));
+                userParent.setTodayRebate(userParent.getTodayRebate().add(BigDecimal.valueOf(card)));
+                userParentRepository.save(userParent);
                 if (null != parent) {
-                    UserParent parentUser = userParentRepository.searchByUserId(parent);
-                    if (null == parentUser) {
-                        UserParent myParent = new UserParent(parent, null, null, null, 3);
-                        userParentRepository.save(myParent);
-                        parentUser = myParent;
-                    }
                     CreateCommand createCommand = new CreateCommand();
-                    createCommand.setFlowType(FlowType.IN_FLOW);
-                    createCommand.setUserId(parent);
-                    createCommand.setMoney(BigDecimal.valueOf(0.32 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
-                    createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
-                    commissionDetailedService.create(createCommand);
-                    parentUser.setCommission(parentUser.getCommission().add(BigDecimal.valueOf(0.32 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                    JSONObject jsonObject1 = new JSONObject();
-                    jsonObject1.put("playerId", parent);
-                    jsonObject1.put("commission", parentUser.getCommission());
-                    jsonObject1.put("extensionCount", userParentRepository.spreadCount(parent));
-                    notice.add(jsonObject1);
-                    userParentRepository.save(parentUser);
-                    if (null != b && b != parent.intValue()) {
-                        UserParent bUser = userParentRepository.searchByUserId(b);
+                    UserParent userParent1 = userParentRepository.searchByUserId(parent);
+                    if (null != userParent1.getLevel() && 1 == userParent1.getLevel()) {
                         createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(b);
-                        createCommand.setMoney(BigDecimal.valueOf(0.12 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+                        createCommand.setUserId(parent);
+                        createCommand.setMoney(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                         commissionDetailedService.create(createCommand);
-                        bUser.setCommission(bUser.getCommission().add(BigDecimal.valueOf(0.12 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        JSONObject jsonObjectB = new JSONObject();
-                        jsonObjectB.put("playerId", b);
-                        jsonObjectB.put("commission", bUser.getCommission());
-                        jsonObjectB.put("extensionCount", userParentRepository.spreadCount(b));
-                        notice.add(jsonObjectB);
-                        userParentRepository.save(bUser);
-                        if (null != a && a != parent.intValue()) {
-                            UserParent aUser = userParentRepository.searchByUserId(a);
+
+                        userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()));
+//                        userParent1.setCommission(userParent1.getCommission().add(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP)));
+                    }
+                    userParent1.setTodayRebate(userParent1.getTodayRebate().add(BigDecimal.valueOf(card)));
+                    userParent1.setTotalRebate(userParent1.getTotalRebate().add(BigDecimal.valueOf(card)));
+                    userParentRepository.save(userParent1);
+
+                    parent = userParent1.getParent();
+                    if (null != parent) {
+                        UserParent userParent2 = userParentRepository.searchByUserId(parent);
+
+                        if (null != userParent2.getLevel() && 1 == userParent2.getLevel()) {
+                            createCommand = new CreateCommand();
                             createCommand.setFlowType(FlowType.IN_FLOW);
-                            createCommand.setUserId(a);
-                            createCommand.setMoney(BigDecimal.valueOf(0.06 / 108 * 0.95 * jsonObject.getFloatValue("card")));
+                            createCommand.setUserId(parent);
+                            createCommand.setMoney(BigDecimal.valueOf(0.12 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
                             createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                             commissionDetailedService.create(createCommand);
-                            aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(0.06 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                            JSONObject jsonObjectA = new JSONObject();
-                            jsonObjectA.put("playerId", a);
-                            jsonObjectA.put("commission", aUser.getCommission());
-                            jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
-                            notice.add(jsonObjectA);
-                            userParentRepository.save(aUser);
+
+                            userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()));
+//                            userParent2.setCommission(userParent2.getCommission().add(BigDecimal.valueOf(0.12 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
                         }
-                    } else if (null != b && b == parent.intValue() && null != a) {
-                        UserParent aUser = userParentRepository.searchByUserId(a);
-                        createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(a);
-                        createCommand.setMoney(BigDecimal.valueOf(0.12 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
-                        createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
-                        commissionDetailedService.create(createCommand);
-                        aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(0.12 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        JSONObject jsonObjectA = new JSONObject();
-                        jsonObjectA.put("playerId", a);
-                        jsonObjectA.put("commission", aUser.getCommission());
-                        jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
-                        notice.add(jsonObjectA);
-                        userParentRepository.save(aUser);
+                        userParent2.setTodayRebate(userParent2.getTodayRebate().add(BigDecimal.valueOf(card)));
+                        userParent2.setTotalRebate(userParent2.getTotalRebate().add(BigDecimal.valueOf(card)));
+                        userParentRepository.save(userParent2);
+
+                        parent = userParent2.getParent();
+                        if (null != parent) {
+                            UserParent userParent3 = userParentRepository.searchByUserId(parent);
+                            if (null != userParent3.getLevel() && 1 == userParent3.getLevel()) {
+                                createCommand = new CreateCommand();
+                                createCommand.setFlowType(FlowType.IN_FLOW);
+                                createCommand.setUserId(parent);
+                                createCommand.setMoney(BigDecimal.valueOf(0.06 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
+                                createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
+                                commissionDetailedService.create(createCommand);
+
+                                userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()));
+//                                userParent3.setCommission(userParent3.getCommission().add(BigDecimal.valueOf(0.06 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
+                            }
+                            userParent3.setTodayRebate(userParent3.getTodayRebate().add(BigDecimal.valueOf(card)));
+                            userParent3.setTotalRebate(userParent3.getTotalRebate().add(BigDecimal.valueOf(card)));
+                            userParentRepository.save(userParent3);
+                            parent = userParent1.getParent();
+
+                            while (null != parent) {
+                                UserParent userParent4 = userParentRepository.searchByUserId(parent);
+                                userParent4.setTodayRebate(userParent4.getTodayRebate().add(BigDecimal.valueOf(card)));
+                                userParent4.setTotalRebate(userParent4.getTotalRebate().add(BigDecimal.valueOf(card)));
+                                userParentRepository.save(userParent4);
+                            }
+                        }
                     }
                 }
             }
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (0 != notice.size()) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("list", notice);
-                    jsonObject.put("enc", CoreStringUtils.md5(notice.size() + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                    String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "extension_commission=" + jsonObject.toJSONString());
-                    if (!CoreStringUtils.isEmpty(s)) {
-                        JSONObject result = JSONObject.parseObject(s);
-                    }
-                }
-            }
-        }).start();
     }
 
     @Override
     public UserParent byUserId(Integer userId) {
         return userParentRepository.searchByUserId(userId);
+    }
+
+    @Override
+    public List<UserParent> byParent(Integer parent) {
+        return userParentRepository.byParent(parent);
+    }
+
+    @Override
+    public void lastDayRebate() {
+        userParentRepository.updateLastDayRebate();
+    }
+
+    @Override
+    public List<Integer> userIds() {
+        return userParentRepository.userIds();
+    }
+
+    @Override
+    public void lastDayRebateCommission(Integer userId) {
+        UserParent userParent = byUserId(userId);
+        BigDecimal rebate = BigDecimal.ZERO;
+        if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
+        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
+        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
+        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
+        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
+        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
+            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
+        }
+        List<UserParent> userParents = byParent(userId);
+        for (UserParent child : userParents) {
+            if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
+            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
+            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
+            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
+            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
+            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
+                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
+            }
+        }
+        userParent.setLastdayRebateCommission(rebate.setScale(2, RoundingMode.HALF_UP));
+        userParent.setCommission(userParent.getCommission().add(rebate));
+        userParent.setCommission(userParent.getCommission().add(userParent.getLastdaySelfRebate()));
+        if (1 == userParent.getLevel()) {
+            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(500))) {
+                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(50)));
+                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(50));
+            }
+            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(1000))) {
+                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100)));
+                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100));
+            }
+        }
+        userParentRepository.save(userParent);
     }
 
 }

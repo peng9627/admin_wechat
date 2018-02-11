@@ -35,4 +35,31 @@
         <property name="url" value="${gameServer.url}"/>
         <property name="key" value="${gameServer.key}"/>
     </bean>
+
+    <!-- 数据分析定时下发工作类 -->
+    <bean id="quartzJob" class="game.interfaces.user.web.UserController"/>
+    <!-- 定义调用对象和调用对象的方法 -->
+    <bean id="jobTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="quartzJob"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="lastDayRebate"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 定义触发时间 -->
+    <bean id="jobTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobTask"/>
+        <!-- cron表达式 -->
+        <property name="cronExpression" value="0 0 0 * * ?"/>
+    </bean>
+    <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+    <bean id="taskManager" lazy-init="false" autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="jobTaskTrigger"/>
+            </list>
+        </property>
+    </bean>
+
 </beans>

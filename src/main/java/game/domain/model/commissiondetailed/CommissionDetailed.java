@@ -15,6 +15,7 @@ public class CommissionDetailed extends ConcurrencySafeEntity {
     private Integer user;                  //用户
     private FlowType flowType;          //资金流向类型
     private BigDecimal money;                  //金额
+    private BigDecimal relMoney;                  //金额
     private String description;         //说明（）
 
     public Integer getUser() {
@@ -39,6 +40,14 @@ public class CommissionDetailed extends ConcurrencySafeEntity {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    public BigDecimal getRelMoney() {
+        return relMoney;
+    }
+
+    public void setRelMoney(BigDecimal relMoney) {
+        this.relMoney = relMoney;
     }
 
     public String getDescription() {

@@ -16,6 +16,8 @@
 
         <property name="money" column="commission" type="java.math.BigDecimal" scale="2"/>
 
+        <property name="relMoney" column="rel_commission" type="java.math.BigDecimal" scale="2"/>
+
         <property name="flowType" column="flow_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">game.core.enums.FlowType</param>

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -143,6 +144,44 @@ public class UserController extends BaseApiController {
         try {
             jsonMessage.setCode(0);
             userParentAppService.consumption(JSON.parseArray(jsonArray));
+        } catch (Exception e) {
+            jsonMessage.setData(1);
+            e.printStackTrace();
+        }
+        return jsonMessage;
+    }
+
+    @RequestMapping(value = "/lastday_rebate")
+    @ResponseBody
+    public JsonMessage lastDayRebate() {
+        JsonMessage jsonMessage = new JsonMessage();
+        try {
+            jsonMessage.setCode(0);
+            long total = System.currentTimeMillis();
+            long time = System.currentTimeMillis();
+            userParentAppService.lastDayRebate();
+            List<Integer> integers = userParentAppService.userIds();
+            System.out.println(System.currentTimeMillis() - time);
+            time = System.currentTimeMillis();
+            for (Integer integer : integers) {
+                lastDayRebateCommission(integer);
+            }
+            System.out.println(System.currentTimeMillis() - time);
+            System.out.println(System.currentTimeMillis() - total);
+        } catch (Exception e) {
+            jsonMessage.setData(1);
+            e.printStackTrace();
+        }
+        return jsonMessage;
+    }
+
+    @RequestMapping(value = "/lastday_rebate_commission")
+    @ResponseBody
+    public JsonMessage lastDayRebateCommission(Integer userId) {
+        JsonMessage jsonMessage = new JsonMessage();
+        try {
+            jsonMessage.setCode(0);
+            userParentAppService.lastDayRebateCommission(userId);
         } catch (Exception e) {
             jsonMessage.setData(1);
             e.printStackTrace();
