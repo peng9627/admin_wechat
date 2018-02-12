@@ -12,7 +12,7 @@
 
         <property name="createDate" column="create_date" type="java.util.Date"/>
 
-        <property name="userId" column="user_id" type="java.lang.Integer"/>
+        <property name="userId" column="user_id" type="java.lang.Integer" not-null="true" unique="true"/>
 
         <property name="parent" column="parent_id" type="java.lang.Integer"/>
 
