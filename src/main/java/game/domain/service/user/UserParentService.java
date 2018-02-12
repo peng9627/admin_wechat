@@ -130,9 +130,13 @@ public class UserParentService implements IUserParentService {
 
                             while (null != parent) {
                                 UserParent userParent4 = userParentRepository.searchByUserId(parent);
+                                if (null == userParent4) {
+                                    return;
+                                }
                                 userParent4.setTodayRebate(userParent4.getTodayRebate().add(BigDecimal.valueOf(card)));
                                 userParent4.setTotalRebate(userParent4.getTotalRebate().add(BigDecimal.valueOf(card)));
                                 userParentRepository.save(userParent4);
+                                parent = userParent4.getParent();
                             }
                         }
                     }
