@@ -130,18 +130,34 @@ public class Constants {
 //    public static String MANAGER_URL = "http://gl.zmbaobei.com/";
 
     //全民互娱
-    public static String WECHAT_APPID = "wx69c380fbcc3322ff";                       //appid
-    public static String WECHAT_KEY = "MgVQuWB0IUaPZ2tkuU0Dx7DItyLohxKA";           //微信支付key
+//    public static String WECHAT_APPID = "wx69c380fbcc3322ff";                       //appid
+//    public static String WECHAT_KEY = "MgVQuWB0IUaPZ2tkuU0Dx7DItyLohxKA";           //微信支付key
+//    public static String WECHAT_APPSECRET = "";                       //appsecret
+//    public static String WECHAT_NOTIFY_URL = "http://quanminzf.chuangmikeji.com/api/recharge/wechat/notify";           //微信异步通知地址
+//    public static String WECHAT_UNIFIED_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"; //微信请求下单统一地址
+//    public static String WECHAT_MCH_ID = "1498403312";
+//    public static String ALIPAY_APP_ID = "2018012402053914";
+//    public static String ALIPAY_APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCypf62B+A2KdQe+qO+Owko9J4zmPXHiOYqI7/1IHomfwpw4AIo5KOIGxlnshV6jHDTkHRrgRbHgh9BVRFst0SI0aLyejfjPQ8JYsOdUqDtubidAPCJ6elVUUUXQ+DIpZXdB3ArAGo3W0M19qI1bzQT4BJXT/SprEdPSUQ9skxOLSMRuFo3VJZvzSVsx0UnaFpj38230/3jRtI8kgbxJRtFYa0IW/NhQZJzQouq/v5r2RIhwS6WmjoqeXTxtEXzaBpIgSLCSE3d6LY9Xr7IbC05B80mRinMPMW/pGrJKpgRu3Kmzjw4rmFYFsCWPkltSZ39JoTUGbxfO6XExk6oL+SDAgMBAAECggEBAKdK0MIvj+PIuc4k0c9jQ0mqALe6xnYLGdZeUfS/bAO+tc1LyFn4+baMAfdcCccP2twTiyHc6bL8hD5O5hlTaYdiIOBGWS2f0QPuC9a4OOFFKL9F0PqlJA70IuoNc2MRxMwNmhl6svyRptfS1MWLFE6EZ0iCJE/7d2+k4ZWQ8OnGvooOVDbTCqbEOYSX8r4UZFJoImT9l+YsONhPqnb/ObA2tKg4Rr1WThIDWj6tuAFpTY4UruPtMrU2R39+dQu4sdQtiE4VSVRjpVD3BH6EK+uGwY1hovotQVkKoEzUaNL7p8KdG+TzCmdaRG2UsGNHI+rsS/8fcRfG82DCYtCqTWkCgYEA/bqYN3ZzuxY2qb+mdzKHdLY63JYsDkxH4FAiyA/ywZVHRRyD8G5vhV1w4ehOk4f88ppn/Ll9dN1B9xuVxtKSoNPnzuuxTdtdExhzG0s9I8WiRAPzsA5w6TZn6+6Z5ys0Ms2UjiOMFthquVtvkczFkmVYTRNqYFaoYYys9PgHP9UCgYEAtD9bk43x8NIZQxrsrHooI1Tq8kUMypHvfod9aZdvm6KYPDwp11FbDJIhwILL9DXeCbcRU6HnYyTTXAY9ch34ILKvDudyrrp0zfXpgEBZoxl+KsxjKvU2NkkfbIgC3dQX1n3ZJg32suw1LuVOi1gWIAyNa5vyMjgNq4LnpGJhFvcCgYEAmfmRhB7rDn7lf0/hmnZcg3RO9ixf4fFisPqQkO40uEt567PpUZADN2DELyPGA3vEAgm3z0NVogTfkjD4TKbe+qB+DTE08PWNXxg4Sjj3imzWEwZ+7LlmxfARUrkCRqoOTEI7w6JI0lhVM9UMOOOWhkfgNS3yITKVjlVLZIHcDF0CgYBdXLv4b/uzu3+uTJHuvM9xjZisqKt5eaHNrix9txzuRogIGzmo99Drb/3fk2BFPGmoKpTk9uW9auO3tNu68l8FwMgANk4mxxmdXRT3g11qp9e8H2X2aFEOSU3nj4O8lxFJ3qHNnkn8X3Eku021y4iaTSYraPlIndQm1IVblkGn/QKBgAdjkjqzSFrd40aZ8weyS2aSnQ2UCO3X9XA01CHNZjLzZtU8YAjoA/zExt44EDW+xqGSm8orI1mbF5VZP24nhyH8cKCBOWpH51vuIft1mXzb8F9R24p5XX2KIcn/h5uRXqeCrrMnPsop8Yzftr+RGh5NHPWqYOns7FqGt1a9RDIs";
+//    public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhtgj8d4ypsXp6fBwS69FxFNGP2LSZ4NJSypJtHau6v7HNddwh012/9f0k1QnvxfJnk02paBh6T0+uJg5NUGaPmTMLtDVHQXYnx/Ibiqcu7Dl6kQf9Rc9OgwrzY1g8r+BipeFyIXP6peCIexpj8MazkYwMoAvZ+fzRmWZ4IRgpCHeLpnqDMiCmaZ5nn8B7yCxBXI6Z0cpFq+BAQDbdVuvPYSsmsPqTy5BctGy4DEebk9GJbvRCdYwh4DbiueKWJy493+U2p3+4GlaVhpakv1xVWx4Yk4JACi7HSRCwZj2nBstVWapEZdiy/x+QVno27vKVRWBOm/NJAPMo3QtUfQI2QIDAQAB";
+//    public static String ALIPAY_NOTIFY_URL = "http://quanminzf.chuangmikeji.com/api/recharge/alipay/notify";
+//    public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
+//    public static String WECHAT_OFFICE_APPID = "wx34e46b11c9b3db48";
+//    public static String WECHAT_OFFICE_APPSECRET = "c8235fb7ff5f3cbc403f799d27397679";
+//    public static String MANAGER_URL = "http://quanmingl.chuangmikeji.com/";
+
+    //王牌
+    public static String WECHAT_APPID = "wxc7218bbea4ac6b49";                       //appid
+    public static String WECHAT_KEY = "Cmsy1234567891234567891234567891";           //微信支付key
     public static String WECHAT_APPSECRET = "";                       //appsecret
-    public static String WECHAT_NOTIFY_URL = "http://quanminzf.chuangmikeji.com/api/recharge/wechat/notify";           //微信异步通知地址
+    public static String WECHAT_NOTIFY_URL = "http://wanzhouzf.hi528.cn/api/recharge/wechat/notify";           //微信异步通知地址
     public static String WECHAT_UNIFIED_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"; //微信请求下单统一地址
-    public static String WECHAT_MCH_ID = "1498403312";
-    public static String ALIPAY_APP_ID = "2018012402053914";
-    public static String ALIPAY_APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCypf62B+A2KdQe+qO+Owko9J4zmPXHiOYqI7/1IHomfwpw4AIo5KOIGxlnshV6jHDTkHRrgRbHgh9BVRFst0SI0aLyejfjPQ8JYsOdUqDtubidAPCJ6elVUUUXQ+DIpZXdB3ArAGo3W0M19qI1bzQT4BJXT/SprEdPSUQ9skxOLSMRuFo3VJZvzSVsx0UnaFpj38230/3jRtI8kgbxJRtFYa0IW/NhQZJzQouq/v5r2RIhwS6WmjoqeXTxtEXzaBpIgSLCSE3d6LY9Xr7IbC05B80mRinMPMW/pGrJKpgRu3Kmzjw4rmFYFsCWPkltSZ39JoTUGbxfO6XExk6oL+SDAgMBAAECggEBAKdK0MIvj+PIuc4k0c9jQ0mqALe6xnYLGdZeUfS/bAO+tc1LyFn4+baMAfdcCccP2twTiyHc6bL8hD5O5hlTaYdiIOBGWS2f0QPuC9a4OOFFKL9F0PqlJA70IuoNc2MRxMwNmhl6svyRptfS1MWLFE6EZ0iCJE/7d2+k4ZWQ8OnGvooOVDbTCqbEOYSX8r4UZFJoImT9l+YsONhPqnb/ObA2tKg4Rr1WThIDWj6tuAFpTY4UruPtMrU2R39+dQu4sdQtiE4VSVRjpVD3BH6EK+uGwY1hovotQVkKoEzUaNL7p8KdG+TzCmdaRG2UsGNHI+rsS/8fcRfG82DCYtCqTWkCgYEA/bqYN3ZzuxY2qb+mdzKHdLY63JYsDkxH4FAiyA/ywZVHRRyD8G5vhV1w4ehOk4f88ppn/Ll9dN1B9xuVxtKSoNPnzuuxTdtdExhzG0s9I8WiRAPzsA5w6TZn6+6Z5ys0Ms2UjiOMFthquVtvkczFkmVYTRNqYFaoYYys9PgHP9UCgYEAtD9bk43x8NIZQxrsrHooI1Tq8kUMypHvfod9aZdvm6KYPDwp11FbDJIhwILL9DXeCbcRU6HnYyTTXAY9ch34ILKvDudyrrp0zfXpgEBZoxl+KsxjKvU2NkkfbIgC3dQX1n3ZJg32suw1LuVOi1gWIAyNa5vyMjgNq4LnpGJhFvcCgYEAmfmRhB7rDn7lf0/hmnZcg3RO9ixf4fFisPqQkO40uEt567PpUZADN2DELyPGA3vEAgm3z0NVogTfkjD4TKbe+qB+DTE08PWNXxg4Sjj3imzWEwZ+7LlmxfARUrkCRqoOTEI7w6JI0lhVM9UMOOOWhkfgNS3yITKVjlVLZIHcDF0CgYBdXLv4b/uzu3+uTJHuvM9xjZisqKt5eaHNrix9txzuRogIGzmo99Drb/3fk2BFPGmoKpTk9uW9auO3tNu68l8FwMgANk4mxxmdXRT3g11qp9e8H2X2aFEOSU3nj4O8lxFJ3qHNnkn8X3Eku021y4iaTSYraPlIndQm1IVblkGn/QKBgAdjkjqzSFrd40aZ8weyS2aSnQ2UCO3X9XA01CHNZjLzZtU8YAjoA/zExt44EDW+xqGSm8orI1mbF5VZP24nhyH8cKCBOWpH51vuIft1mXzb8F9R24p5XX2KIcn/h5uRXqeCrrMnPsop8Yzftr+RGh5NHPWqYOns7FqGt1a9RDIs";
-    public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhtgj8d4ypsXp6fBwS69FxFNGP2LSZ4NJSypJtHau6v7HNddwh012/9f0k1QnvxfJnk02paBh6T0+uJg5NUGaPmTMLtDVHQXYnx/Ibiqcu7Dl6kQf9Rc9OgwrzY1g8r+BipeFyIXP6peCIexpj8MazkYwMoAvZ+fzRmWZ4IRgpCHeLpnqDMiCmaZ5nn8B7yCxBXI6Z0cpFq+BAQDbdVuvPYSsmsPqTy5BctGy4DEebk9GJbvRCdYwh4DbiueKWJy493+U2p3+4GlaVhpakv1xVWx4Yk4JACi7HSRCwZj2nBstVWapEZdiy/x+QVno27vKVRWBOm/NJAPMo3QtUfQI2QIDAQAB";
-    public static String ALIPAY_NOTIFY_URL = "http://quanminzf.chuangmikeji.com/api/recharge/alipay/notify";
+    public static String WECHAT_MCH_ID = "1498320552";
+    public static String ALIPAY_APP_ID = "";
+    public static String ALIPAY_APP_PRIVATE_KEY = "";
+    public static String ALIPAY_PUBLIC_KEY = "";
+    public static String ALIPAY_NOTIFY_URL = "http://wanzhouzf.hi528.cn/api/recharge/alipay/notify";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "wx34e46b11c9b3db48";
-    public static String WECHAT_OFFICE_APPSECRET = "c8235fb7ff5f3cbc403f799d27397679";
-    public static String MANAGER_URL = "http://quanmingl.chuangmikeji.com/";
+    public static String WECHAT_OFFICE_APPID = "wxa9289774de2a4694";
+    public static String WECHAT_OFFICE_APPSECRET = "a232120a691067164241715f325f9fb1";
+    public static String MANAGER_URL = "http://wanzhougl.hi528.cn/";
 }
