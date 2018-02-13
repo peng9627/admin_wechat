@@ -73,18 +73,24 @@ public class UserParentService implements IUserParentService {
                 userParent.setTotalRebate(userParent.getTotalRebate().add(BigDecimal.valueOf(card)));
                 userParent.setTodayRebate(userParent.getTodayRebate().add(BigDecimal.valueOf(card)));
                 userParentRepository.save(userParent);
-                if (null != parent) {
+                if (null != parent || 1 == userParent.getLevel()) {
                     CreateCommand createCommand = new CreateCommand();
-                    UserParent userParent1 = userParentRepository.searchByUserId(parent);
+                    UserParent userParent1;
+                    if (1 == userParent.getLevel()) {
+                        userParent1 = userParent;
+                    } else {
+                        userParent1 = userParentRepository.searchByUserId(parent);
+                    }
+
                     if (null != userParent1.getLevel() && 1 == userParent1.getLevel()) {
                         createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(parent);
+                        createCommand.setUserId(userParent1.getUserId());
                         createCommand.setMoney(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                         commissionDetailedService.create(createCommand);
 
                         userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()));
-//                        userParent1.setCommission(userParent1.getCommission().add(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP)));
+//                        userParent1.setCommission(userParent1.getCommission().add(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
                     }
                     userParent1.setTodayRebate(userParent1.getTodayRebate().add(BigDecimal.valueOf(card)));
                     userParent1.setTotalRebate(userParent1.getTotalRebate().add(BigDecimal.valueOf(card)));
