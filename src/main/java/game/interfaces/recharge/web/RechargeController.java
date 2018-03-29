@@ -1,8 +1,6 @@
 package game.interfaces.recharge.web;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
@@ -63,7 +61,7 @@ public class RechargeController extends BaseController {
 
         JsonMessage jsonMessage = new JsonMessage();
         jsonMessage.setPayType(command.getPayType().name());
-        if (null == command.getId()) {
+        if (null == command.getId() || 0 == command.getUserId()) {
             jsonMessage.setCode(1);
             jsonMessage.setMessage("id不能为空");
             return jsonMessage;

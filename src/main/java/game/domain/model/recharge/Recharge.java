@@ -23,6 +23,8 @@ public class Recharge extends ConcurrencySafeEntity {
     private Date payTime;
     private String selectId;
     private Date notifyTime;
+    private Integer beforeCard;               //房卡
+    private Integer beforeGold;               //金币
 
     public void changePayNo(String payNo) {
         this.payNo = payNo;
@@ -110,6 +112,22 @@ public class Recharge extends ConcurrencySafeEntity {
 
     public Recharge() {
         super();
+    }
+
+    public Integer getBeforeCard() {
+        return beforeCard;
+    }
+
+    public void setBeforeCard(Integer beforeCard) {
+        this.beforeCard = beforeCard;
+    }
+
+    public Integer getBeforeGold() {
+        return beforeGold;
+    }
+
+    public void setBeforeGold(Integer beforeGold) {
+        this.beforeGold = beforeGold;
     }
 
     public Recharge(String rechargeNo, Integer userId, BigDecimal money, YesOrNoStatus isSuccess, PayType payType, String selectId) {

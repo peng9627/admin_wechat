@@ -73,28 +73,28 @@ public class ApiRechargeController extends BaseApiController {
             sign = notify.getSign();
             notify.setSign("");
             try {
-                String mySign = Signature.getWechatSign(notify);
-                if (mySign.equals(sign)) {
-                    if (notify.getReturn_code().equals("SUCCESS")) {
-                        if (notify.getResult_code().equals("SUCCESS")) {
-                            rechargeAppService.wechatSuccess(notify);
-                            logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付成功，支付方式为[" + PayType.WECHAT + "]");
-                            response.getWriter().write("<xml>\n" +
-                                    "  <return_code><![CDATA[SUCCESS]]></return_code>\n" +
-                                    "  <return_msg><![CDATA[OK]]></return_msg>\n" +
-                                    "</xml>");
-                        } else {
-                            logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[" + notify.getErr_code_des() + "]");
-                        }
-
+//                String mySign = Signature.getWechatSign(notify);
+//                if (mySign.equals(sign)) {
+                if (notify.getReturn_code().equals("SUCCESS")) {
+                    if (notify.getResult_code().equals("SUCCESS")) {
+                        rechargeAppService.wechatSuccess(notify);
+                        logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付成功，支付方式为[" + PayType.WECHAT + "]");
+                        response.getWriter().write("<xml>\n" +
+                                "  <return_code><![CDATA[SUCCESS]]></return_code>\n" +
+                                "  <return_msg><![CDATA[OK]]></return_msg>\n" +
+                                "</xml>");
                     } else {
-                        logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[" + notify.getReturn_msg() + "]");
+                        logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[" + notify.getErr_code_des() + "]");
                     }
+
                 } else {
-                    logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[{1}]");
+                    logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[" + notify.getReturn_msg() + "]");
                 }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+//                } else {
+//                    logger.info("充值流水号为[" + notify.getOut_trade_no() + "]的订单支付失败，原因[{1}]");
+//                }
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }

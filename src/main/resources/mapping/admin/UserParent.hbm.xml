@@ -12,7 +12,7 @@
 
         <property name="createDate" column="create_date" type="java.util.Date"/>
 
-        <property name="userId" column="user_id" type="java.lang.Integer"/>
+        <property name="userId" column="user_id" type="java.lang.Integer" unique="true"/>
 
         <property name="parent" column="parent_id" type="java.lang.Integer"/>
 
@@ -23,5 +23,9 @@
         <property name="level" column="level" type="java.lang.Integer"/>
 
         <property name="commission" column="commission" type="java.math.BigDecimal" scale="2"/>
+
+        <property name="totalCommission" column="total_commission" type="java.math.BigDecimal" scale="2"/>
+
+        <property name="totalConsumption" column="total_consumption" type="java.math.BigDecimal" scale="2"/>
     </class>
 </hibernate-mapping>

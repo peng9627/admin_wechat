@@ -17,7 +17,9 @@ public class UserParent extends ConcurrencySafeEntity {
     private Integer b;                  //b级代理
     private Integer a;                  //a级代理
     private Integer level;              //等级
-    private BigDecimal commission;         //佣金
+    private BigDecimal commission;      //佣金
+    private BigDecimal totalCommission; //总佣金
+    private BigDecimal totalConsumption;//总消费
 
     public Integer getUserId() {
         return userId;
@@ -67,6 +69,22 @@ public class UserParent extends ConcurrencySafeEntity {
         this.commission = commission;
     }
 
+    public BigDecimal getTotalCommission() {
+        return totalCommission;
+    }
+
+    public void setTotalCommission(BigDecimal totalCommission) {
+        this.totalCommission = totalCommission;
+    }
+
+    public BigDecimal getTotalConsumption() {
+        return totalConsumption;
+    }
+
+    public void setTotalConsumption(BigDecimal totalConsumption) {
+        this.totalConsumption = totalConsumption;
+    }
+
     public UserParent() {
     }
 
@@ -77,6 +95,8 @@ public class UserParent extends ConcurrencySafeEntity {
         this.a = a;
         this.level = level;
         this.commission = BigDecimal.ZERO;
+        this.totalCommission = BigDecimal.ZERO;
+        this.totalConsumption = BigDecimal.ZERO;
         setCreateDate(new Date());
     }
 }
