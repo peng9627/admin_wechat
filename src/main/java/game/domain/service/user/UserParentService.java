@@ -173,51 +173,51 @@ public class UserParentService implements IUserParentService {
 
     @Override
     public void lastDayRebateCommission(Integer userId) {
-        UserParent userParent = byUserId(userId);
-        BigDecimal rebate = BigDecimal.ZERO;
-        if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
-        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
-        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
-        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
-        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
-        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
-            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
-        }
-        List<UserParent> userParents = byParent(userId);
-        for (UserParent child : userParents) {
-            if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
-            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
-            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
-            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
-            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
-            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
-                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
-            }
-        }
-        userParent.setLastdayRebateCommission(rebate.setScale(2, RoundingMode.HALF_UP));
-        userParent.setCommission(userParent.getCommission().add(rebate));
-        userParent.setCommission(userParent.getCommission().add(userParent.getLastdaySelfRebate()));
-        if (1 == userParent.getLevel()) {
-            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(500))) {
-                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(50)));
-                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(50));
-            }
-            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(1000))) {
-                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100)));
-                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100));
-            }
-        }
-        userParentRepository.save(userParent);
+//        UserParent userParent = byUserId(userId);
+//        BigDecimal rebate = BigDecimal.ZERO;
+//        if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
+//        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
+//        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
+//        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
+//        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
+//        } else if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
+//            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
+//        }
+//        List<UserParent> userParents = byParent(userId);
+//        for (UserParent child : userParents) {
+//            if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));
+//            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(500000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.08)));
+//            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(200000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.06)));
+//            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(100000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.05)));
+//            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(50000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.03)));
+//            } else if (1 == child.getLevel() && 0 <= (child.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(20000))) {
+//                rebate = rebate.subtract(child.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.01)));
+//            }
+//        }
+//        userParent.setLastdayRebateCommission(rebate.setScale(2, RoundingMode.HALF_UP));
+//        userParent.setCommission(userParent.getCommission().add(rebate));
+//        userParent.setCommission(userParent.getCommission().add(userParent.getLastdaySelfRebate()));
+//        if (1 == userParent.getLevel()) {
+//            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(500))) {
+//                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(50)));
+//                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(50));
+//            }
+//            if (0 <= userParent.getLastdaySelfRebate().compareTo(BigDecimal.valueOf(1000))) {
+//                userParent.setCommission(userParent.getCommission().add(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100)));
+//                userParent.setLastdaySelfRebateCommission(BigDecimal.valueOf(userParent.getLastdaySelfRebate().intValue() / 1000 * 100));
+//            }
+//        }
+//        userParentRepository.save(userParent);
     }
 
 }
