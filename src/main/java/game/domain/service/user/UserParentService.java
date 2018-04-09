@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,6 +65,14 @@ public class UserParentService implements IUserParentService {
     @Override
     public void consumption(JSONArray jsonArray) {
         JSONArray notice = new JSONArray();
+        // 九州
+//        double m1 = 0.38 / 110;
+//        double m2 = 0.12 / 110;
+//        double m3 = 0.06 / 110;
+        //讯米
+        double m1 = 0.38 * 0.83 / 110;
+        double m2 = 0.12 * 0.83 / 110;
+        double m3 = 0.06 * 0.83 / 110;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             Float card = jsonObject.getFloatValue("card");
@@ -87,7 +96,7 @@ public class UserParentService implements IUserParentService {
                     if (null != userParent1.getLevel() && 1 == userParent1.getLevel()) {
                         createCommand.setFlowType(FlowType.IN_FLOW);
                         createCommand.setUserId(userParent1.getUserId());
-                        createCommand.setMoney(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
+                        createCommand.setMoney(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                         commissionDetailedService.create(createCommand);
 
@@ -104,7 +113,7 @@ public class UserParentService implements IUserParentService {
                             createCommand = new CreateCommand();
                             createCommand.setFlowType(FlowType.IN_FLOW);
                             createCommand.setUserId(parent);
-                            createCommand.setMoney(BigDecimal.valueOf(0.12 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
+                            createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                             createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                             commissionDetailedService.create(createCommand);
 
@@ -122,7 +131,7 @@ public class UserParentService implements IUserParentService {
                                 createCommand = new CreateCommand();
                                 createCommand.setFlowType(FlowType.IN_FLOW);
                                 createCommand.setUserId(parent);
-                                createCommand.setMoney(BigDecimal.valueOf(0.06 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP));
+                                createCommand.setMoney(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                                 createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                                 commissionDetailedService.create(createCommand);
 

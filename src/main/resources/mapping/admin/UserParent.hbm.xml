@@ -42,5 +42,7 @@
         <property name="lastdaySelfRebateCommission" column="lastday_self_rebate_commission" type="java.math.BigDecimal"
                   scale="2"/>
 
+        <property name="bindDate" column="bind_date" type="java.util.Date"/>
+
     </class>
 </hibernate-mapping>

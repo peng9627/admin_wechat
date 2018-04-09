@@ -25,6 +25,7 @@ public class UserParent extends ConcurrencySafeEntity {
     private BigDecimal todaySelfRebate;     //今日自己佣金
     private BigDecimal lastdaySelfRebate;     //昨日自己佣金
     private BigDecimal lastdaySelfRebateCommission;//昨日自己佣金返利(获得的)
+    private Date bindDate;              //绑定时间
 
     public Integer getUserId() {
         return userId;
@@ -138,6 +139,14 @@ public class UserParent extends ConcurrencySafeEntity {
         this.lastdaySelfRebateCommission = lastdaySelfRebateCommission;
     }
 
+    public Date getBindDate() {
+        return bindDate;
+    }
+
+    public void setBindDate(Date bindDate) {
+        this.bindDate = bindDate;
+    }
+
     public UserParent() {
     }
 
@@ -157,5 +166,6 @@ public class UserParent extends ConcurrencySafeEntity {
         this.lastdaySelfRebate = BigDecimal.ZERO;
         this.lastdaySelfRebateCommission = BigDecimal.ZERO;
         setCreateDate(new Date());
+        this.bindDate = new Date();
     }
 }
