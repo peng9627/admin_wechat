@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 
 /**
  * Created by pengyi
@@ -52,6 +53,7 @@ public class UserParentService implements IUserParentService {
             userParentRepository.save(userParent);
         } else if (3 == userParent.getLevel() && null == userParent.getParent()) {
             userParent.setParent(parent);
+            userParent.setBindDate(new Date());
             userParentRepository.save(userParent);
         }
     }

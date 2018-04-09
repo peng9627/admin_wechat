@@ -20,6 +20,7 @@ public class UserParent extends ConcurrencySafeEntity {
     private BigDecimal commission;      //佣金
     private BigDecimal totalCommission; //总佣金
     private BigDecimal totalConsumption;//总消费
+    private Date bindDate;              //绑定时间
 
     public Integer getUserId() {
         return userId;
@@ -85,6 +86,14 @@ public class UserParent extends ConcurrencySafeEntity {
         this.totalConsumption = totalConsumption;
     }
 
+    public Date getBindDate() {
+        return bindDate;
+    }
+
+    public void setBindDate(Date bindDate) {
+        this.bindDate = bindDate;
+    }
+
     public UserParent() {
     }
 
@@ -98,5 +107,6 @@ public class UserParent extends ConcurrencySafeEntity {
         this.totalCommission = BigDecimal.ZERO;
         this.totalConsumption = BigDecimal.ZERO;
         setCreateDate(new Date());
+        bindDate = new Date();
     }
 }

@@ -27,5 +27,7 @@
         <property name="totalCommission" column="total_commission" type="java.math.BigDecimal" scale="2"/>
 
         <property name="totalConsumption" column="total_consumption" type="java.math.BigDecimal" scale="2"/>
+
+        <property name="bindDate" column="bind_date" type="java.util.Date"/>
     </class>
 </hibernate-mapping>
