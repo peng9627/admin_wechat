@@ -37,7 +37,6 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
 
     @Override
     public void updateLastDayRebate() {
-        Date endDate = CoreDateUtils.parseDateStart(CoreDateUtils.formatDate(new Date(), "yyyy-MM-dd"));
         String hqlUpdate = "update UserParent u set u.lastdayRebate = u.todayRebate, u.lastdayTotalRebate = u.totalRebate, u.todayRebate = 0, u.lastdaySelfRebate = u.todaySelfRebate, u.todaySelfRebate = 0";
         int updatedEntities = getSession().createQuery(hqlUpdate)
                 .executeUpdate();

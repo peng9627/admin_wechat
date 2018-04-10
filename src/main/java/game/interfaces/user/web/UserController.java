@@ -100,7 +100,7 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
             if (null != userRepresentation) {
-                response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
+                response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "qgLmwM56rPqyPcC5", 32, false, "utf-8"));
                 return null;
             }
         } catch (Exception e) {
