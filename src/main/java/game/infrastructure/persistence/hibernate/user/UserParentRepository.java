@@ -37,7 +37,7 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
 
     @Override
     public void updateLastDayRebate() {
-        String hqlUpdate = "update UserParent u set u.lastdayRebate = u.todayRebate, u.lastdayTotalRebate = u.totalRebate, u.todayRebate = 0, u.lastdaySelfRebate = u.todaySelfRebate, u.todaySelfRebate = 0";
+        String hqlUpdate = "update UserParent u set u.lastdayRebate = u.todayRebate, u.lastdayTotalRebate = u.totalRebate, u.todayRebate = 0, u.lastdaySelfRebate = u.todaySelfRebate, u.todaySelfRebate = 0, u.lastDayConsumption = u.todayConsumption, u.todayConsumption = 0";
         int updatedEntities = getSession().createQuery(hqlUpdate)
                 .executeUpdate();
     }

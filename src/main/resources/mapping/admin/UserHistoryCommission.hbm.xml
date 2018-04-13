@@ -16,6 +16,8 @@
 
         <property name="userId" column="user_id" type="java.lang.Integer"/>
 
+        <property name="rebate" column="rebate" type="java.math.BigDecimal" scale="2"/>
+
         <property name="consumption" column="consumption" type="java.math.BigDecimal" scale="2"/>
     </class>
 </hibernate-mapping>

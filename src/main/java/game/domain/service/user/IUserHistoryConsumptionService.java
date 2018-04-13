@@ -8,5 +8,5 @@ import java.util.Date;
  * Date : 2016/4/19.
  */
 public interface IUserHistoryConsumptionService {
-    void add(int userId, BigDecimal card, Date date);
+    void add(int userId, BigDecimal rebate, Date date, BigDecimal consumption);
 }

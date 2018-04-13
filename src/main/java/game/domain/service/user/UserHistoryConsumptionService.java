@@ -21,8 +21,8 @@ public class UserHistoryConsumptionService implements IUserHistoryConsumptionSer
     }
 
     @Override
-    public void add(int userId, BigDecimal card, Date date) {
-        UserHistoryConsumption userConsumption = new UserHistoryConsumption(date, userId, card);
+    public void add(int userId, BigDecimal rebate, Date date, BigDecimal consumption) {
+        UserHistoryConsumption userConsumption = new UserHistoryConsumption(date, userId, rebate, consumption);
         userHistoryConsumptionRepository.save(userConsumption);
     }
 }

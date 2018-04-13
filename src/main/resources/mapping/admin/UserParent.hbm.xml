@@ -42,6 +42,15 @@
         <property name="lastdaySelfRebateCommission" column="lastday_self_rebate_commission" type="java.math.BigDecimal"
                   scale="2"/>
 
+        <property name="totalConsumption" column="total_consumption" type="java.math.BigDecimal"
+                  scale="2"/>
+
+        <property name="todayConsumption" column="today_consumption" type="java.math.BigDecimal"
+                  scale="2"/>
+
+        <property name="lastDayConsumption" column="last_day_consumption" type="java.math.BigDecimal"
+                  scale="2"/>
+
         <property name="bindDate" column="bind_date" type="java.util.Date"/>
 
     </class>

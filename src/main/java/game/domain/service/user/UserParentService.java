@@ -70,91 +70,89 @@ public class UserParentService implements IUserParentService {
 //        double m2 = 0.12 / 110;
 //        double m3 = 0.06 / 110;
         //讯米
-        double m1 = 0.36 * 0.83 / 108;
-        double m2 = 0.12 * 0.83 / 108;
-        double m3 = 0.06 * 0.83 / 108;
+        double m1 = 0.36 * 0.9 / 108;
+        double m2 = 0.12 * 0.9 / 108;
+        double m3 = 0.06 * 0.9 / 108;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
             UserParent userParent = userParentRepository.searchByUserId(jsonObject.getIntValue("userId"));
             userConsumptionService.add(jsonObject.getIntValue("userId"), card.divide(BigDecimal.valueOf(108), 2, RoundingMode.HALF_UP));
-            if (null != userParent) {
-                Integer parent = userParent.getParent();
-                userParent.setTotalRebate(userParent.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                userParent.setTodayRebate(userParent.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                userParentRepository.save(userParent);
-                if (null != parent || 1 == userParent.getLevel()) {
-                    CreateCommand createCommand = new CreateCommand();
-                    UserParent userParent1;
-                    if (1 == userParent.getLevel()) {
-                        userParent1 = userParent;
-                    } else {
-                        userParent1 = userParentRepository.searchByUserId(parent);
-                        userParent1.setTodayRebate(userParent1.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                        userParent1.setTotalRebate(userParent1.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                    }
+            if (null == userParent) {
+                userParent = new UserParent(jsonObject.getIntValue("userId"), null, null, null, 2);
+            }
+            userParent.setTotalConsumption(userParent.getTotalConsumption().add(card));
+            userParent.setTodayConsumption(userParent.getTodayConsumption().add(card));
 
-                    if (null != userParent1.getLevel() && 1 == userParent1.getLevel()) {
-                        createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(userParent1.getUserId());
-                        createCommand.setMoney(BigDecimal.valueOf(m1).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                        createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-                        commissionDetailedService.create(createCommand);
+            userParent.setTotalRebate(userParent.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+            userParent.setTodayRebate(userParent.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+            userParentRepository.save(userParent);
 
-                        userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                        userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                    }
-                    userParentRepository.save(userParent1);
+            UserParent userParent1;
+            if (1 == userParent.getLevel()) {
+                userParent1 = userParent;
+            } else if (null == userParent.getParent()) {
+                continue;
+            } else {
+                userParent1 = userParentRepository.searchByUserId(userParent.getParent());
+            }
+            if (null == userParent1 || userParent1.getLevel() != 1) {
+                continue;
+            }
+            CreateCommand createCommand = new CreateCommand();
+            createCommand.setFlowType(FlowType.IN_FLOW);
+            createCommand.setUserId(userParent1.getUserId());
+            createCommand.setMoney(BigDecimal.valueOf(m1).multiply(card).setScale(2, RoundingMode.HALF_UP));
+            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+            commissionDetailedService.create(createCommand);
 
-                    parent = userParent1.getParent();
-                    if (null != parent) {
-                        UserParent userParent2 = userParentRepository.searchByUserId(parent);
+            userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParentRepository.save(userParent1);
 
-                        if (null != userParent2.getLevel() && 1 == userParent2.getLevel()) {
-                            createCommand = new CreateCommand();
-                            createCommand.setFlowType(FlowType.IN_FLOW);
-                            createCommand.setUserId(parent);
-                            createCommand.setMoney(BigDecimal.valueOf(m2).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-                            commissionDetailedService.create(createCommand);
+            Integer parent = userParent1.getParent();
+            if (null != parent) {
+                UserParent userParent2 = userParentRepository.searchByUserId(parent);
 
-                            userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                            userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                createCommand = new CreateCommand();
+                createCommand.setFlowType(FlowType.IN_FLOW);
+                createCommand.setUserId(parent);
+                createCommand.setMoney(BigDecimal.valueOf(m2).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                commissionDetailedService.create(createCommand);
+
+                userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                userParent2.setTodayRebate(userParent2.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                userParent2.setTotalRebate(userParent2.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                userParentRepository.save(userParent2);
+
+                parent = userParent2.getParent();
+                if (null != parent) {
+                    UserParent userParent3 = userParentRepository.searchByUserId(parent);
+                    createCommand = new CreateCommand();
+                    createCommand.setFlowType(FlowType.IN_FLOW);
+                    createCommand.setUserId(parent);
+                    createCommand.setMoney(BigDecimal.valueOf(m3).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                    createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                    commissionDetailedService.create(createCommand);
+
+                    userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                    userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                    userParent3.setTodayRebate(userParent3.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                    userParent3.setTotalRebate(userParent3.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                    userParentRepository.save(userParent3);
+                    parent = userParent3.getParent();
+
+                    while (null != parent) {
+                        UserParent userParent4 = userParentRepository.searchByUserId(parent);
+                        if (null == userParent4) {
+                            return;
                         }
-                        userParent2.setTodayRebate(userParent2.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                        userParent2.setTotalRebate(userParent2.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                        userParentRepository.save(userParent2);
-
-                        parent = userParent2.getParent();
-                        if (null != parent) {
-                            UserParent userParent3 = userParentRepository.searchByUserId(parent);
-                            if (null != userParent3.getLevel() && 1 == userParent3.getLevel()) {
-                                createCommand = new CreateCommand();
-                                createCommand.setFlowType(FlowType.IN_FLOW);
-                                createCommand.setUserId(parent);
-                                createCommand.setMoney(BigDecimal.valueOf(m3).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-                                commissionDetailedService.create(createCommand);
-
-                                userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                                userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                            }
-                            userParent3.setTodayRebate(userParent3.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                            userParent3.setTotalRebate(userParent3.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                            userParentRepository.save(userParent3);
-                            parent = userParent3.getParent();
-
-                            while (null != parent) {
-                                UserParent userParent4 = userParentRepository.searchByUserId(parent);
-                                if (null == userParent4) {
-                                    return;
-                                }
-                                userParent4.setTodayRebate(userParent4.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                                userParent4.setTotalRebate(userParent4.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                                userParentRepository.save(userParent4);
-                                parent = userParent4.getParent();
-                            }
-                        }
+                        userParent4.setTodayRebate(userParent4.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                        userParent4.setTotalRebate(userParent4.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+                        userParentRepository.save(userParent4);
+                        parent = userParent4.getParent();
                     }
                 }
             }
@@ -184,7 +182,7 @@ public class UserParentService implements IUserParentService {
     @Override
     public void lastDayRebateCommission(Integer userId) {
         UserParent userParent = byUserId(userId);
-        userHistoryConsumptionService.add(userId, userParent.getLastdayRebate(), CoreDateUtils.addDay(new Date(), -1));
+        userHistoryConsumptionService.add(userId, userParent.getLastdayRebate(), CoreDateUtils.addDay(new Date(), -1), userParent.getLastDayConsumption());
 //        BigDecimal rebate = BigDecimal.ZERO;
 //        if (1 == userParent.getLevel() && 0 <= (userParent.getLastdayTotalRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP)).compareTo(BigDecimal.valueOf(1000000))) {
 //            rebate = rebate.add(userParent.getLastdayRebate().divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1)));

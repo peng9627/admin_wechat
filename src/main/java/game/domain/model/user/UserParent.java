@@ -25,6 +25,9 @@ public class UserParent extends ConcurrencySafeEntity {
     private BigDecimal todaySelfRebate;     //今日自己佣金
     private BigDecimal lastdaySelfRebate;     //昨日自己佣金
     private BigDecimal lastdaySelfRebateCommission;//昨日自己佣金返利(获得的)
+    private BigDecimal totalConsumption;//总消费
+    private BigDecimal todayConsumption;//今日消费
+    private BigDecimal lastDayConsumption;//昨日消费
     private Date bindDate;              //绑定时间
 
     public Integer getUserId() {
@@ -139,6 +142,30 @@ public class UserParent extends ConcurrencySafeEntity {
         this.lastdaySelfRebateCommission = lastdaySelfRebateCommission;
     }
 
+    public BigDecimal getTotalConsumption() {
+        return totalConsumption;
+    }
+
+    public void setTotalConsumption(BigDecimal totalConsumption) {
+        this.totalConsumption = totalConsumption;
+    }
+
+    public BigDecimal getTodayConsumption() {
+        return todayConsumption;
+    }
+
+    public void setTodayConsumption(BigDecimal todayConsumption) {
+        this.todayConsumption = todayConsumption;
+    }
+
+    public BigDecimal getLastDayConsumption() {
+        return lastDayConsumption;
+    }
+
+    public void setLastDayConsumption(BigDecimal lastDayConsumption) {
+        this.lastDayConsumption = lastDayConsumption;
+    }
+
     public Date getBindDate() {
         return bindDate;
     }
@@ -165,6 +192,9 @@ public class UserParent extends ConcurrencySafeEntity {
         this.todaySelfRebate = BigDecimal.ZERO;
         this.lastdaySelfRebate = BigDecimal.ZERO;
         this.lastdaySelfRebateCommission = BigDecimal.ZERO;
+        this.totalConsumption = BigDecimal.ZERO;
+        this.todayConsumption = BigDecimal.ZERO;
+        this.lastDayConsumption = BigDecimal.ZERO;
         setCreateDate(new Date());
         this.bindDate = new Date();
     }

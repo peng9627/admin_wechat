@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -99,14 +100,14 @@ public class UserController extends BaseApiController {
 //                CoreHttpUtils.urlConnectionByRsa("http://127.0.0.1:10410/1", JSON.toJSONString(socketRequest, ss, features));
             }
 //            return new ModelAndView("redirect:/user/person");
-            if (null != userRepresentation) {
-                response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "qgLmwM56rPqyPcC5", 32, false, "utf-8"));
-                return null;
-            }
+
+            System.out.println("2312312321");
+            response.sendRedirect("https://fir.im/xunmi");
+            System.out.println("54523423423");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
-        return new ModelAndView("");
+        return null;
     }
 
 //    @RequestMapping(value = "/person")

@@ -30,7 +30,11 @@ public class UserAppService implements IUserAppService {
 
     @Override
     public UserRepresentation loginAndBindParent(JSONObject userinfoJson) {
-        return mappingService.map(userService.loginAndBindParent(userinfoJson), UserRepresentation.class, false);
+        User user = userService.loginAndBindParent(userinfoJson);
+        if (null == user) {
+            return null;
+        }
+        return mappingService.map(user, UserRepresentation.class, false);
     }
 
     @Override
