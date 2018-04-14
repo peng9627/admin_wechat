@@ -140,12 +140,22 @@ public class UserController extends BaseApiController {
     @ResponseBody
     public JsonMessage consumption(String jsonArray) {
         JsonMessage jsonMessage = new JsonMessage();
-        try {
-            jsonMessage.setCode(0);
-            userParentAppService.consumption(JSON.parseArray(jsonArray));
-        } catch (Exception e) {
-            jsonMessage.setData(1);
-            e.printStackTrace();
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                jsonMessage.setCode(0);
+                userParentAppService.consumption(JSON.parseArray(jsonArray));
+                notsave = false;
+            } catch (Exception e) {
+                i++;
+                System.out.println("返利错误重新返利" + i);
+            }
+            if (i >= 100) {
+                jsonMessage.setData(1);
+                notsave = false;
+                logger.error("返利数据", jsonArray);
+            }
         }
         return jsonMessage;
     }
