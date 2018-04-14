@@ -147,7 +147,7 @@ public class UserParentService implements IUserParentService {
                     while (null != parent) {
                         UserParent userParent4 = userParentRepository.searchByUserId(parent);
                         if (null == userParent4) {
-                            return;
+                            break;
                         }
                         userParent4.setTodayRebate(userParent4.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
                         userParent4.setTotalRebate(userParent4.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));

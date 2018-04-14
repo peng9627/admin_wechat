@@ -2,6 +2,7 @@ package game.interfaces.user.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.jdbc.exceptions.MySQLTransactionRollbackException;
 import game.application.user.IUserAppService;
 import game.application.user.IUserParentAppService;
 import game.application.user.representation.UserRepresentation;
@@ -10,7 +11,10 @@ import game.core.util.CoreHttpUtils;
 import game.core.util.CoreStringUtils;
 import game.interfaces.shared.api.BaseApiController;
 import game.interfaces.shared.web.JsonMessage;
+import org.hibernate.StaleObjectStateException;
+import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,13 +146,24 @@ public class UserController extends BaseApiController {
     @ResponseBody
     public JsonMessage consumption(String jsonArray) {
         JsonMessage jsonMessage = new JsonMessage();
-        try {
-            jsonMessage.setCode(0);
-            userParentAppService.consumption(JSON.parseArray(jsonArray));
-        } catch (Exception e) {
-            jsonMessage.setData(1);
-            e.printStackTrace();
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                jsonMessage.setCode(0);
+                userParentAppService.consumption(JSON.parseArray(jsonArray));
+                notsave = false;
+            } catch (Exception e) {
+                i++;
+                System.out.println("返利错误重新返利" + i);
+            }
+            if (i >= 100) {
+                jsonMessage.setData(1);
+                notsave = false;
+                logger.error("返利数据", jsonArray);
+            }
         }
+
         return jsonMessage;
     }
 
