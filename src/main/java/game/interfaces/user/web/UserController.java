@@ -100,13 +100,15 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
             if (null != userRepresentation) {
+                logger.info("111");
                 response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
+                logger.info("222");
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
-        return new ModelAndView("");
+        return null;
     }
 
 //    @RequestMapping(value = "/person")
@@ -141,13 +143,24 @@ public class UserController extends BaseApiController {
     @ResponseBody
     public JsonMessage consumption(String jsonArray) {
         JsonMessage jsonMessage = new JsonMessage();
-        try {
-            jsonMessage.setCode(0);
-            userParentAppService.consumption(JSON.parseArray(jsonArray));
-        } catch (Exception e) {
-            jsonMessage.setData(1);
-            e.printStackTrace();
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                jsonMessage.setCode(0);
+                userParentAppService.consumption(JSON.parseArray(jsonArray));
+                notsave = false;
+            } catch (Exception e) {
+                i++;
+                System.out.println("返利错误重新返利" + i);
+            }
+            if (i >= 100) {
+                jsonMessage.setData(1);
+                notsave = false;
+                logger.error("返利数据", jsonArray);
+            }
         }
+
         return jsonMessage;
     }
 

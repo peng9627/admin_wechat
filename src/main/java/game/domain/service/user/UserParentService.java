@@ -69,10 +69,10 @@ public class UserParentService implements IUserParentService {
 //        double m1 = 0.38 / 110;
 //        double m2 = 0.12 / 110;
 //        double m3 = 0.06 / 110;
-        //讯米
-        double m1 = 0.38 * 0.83 / 110;
-        double m2 = 0.12 * 0.83 / 110;
-        double m3 = 0.06 * 0.83 / 110;
+        //川渝
+        double m1 = 0.35 / 110;
+        double m2 = 0.10 / 110;
+        double m3 = 0.05 / 110;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             Float card = jsonObject.getFloatValue("card");
@@ -101,7 +101,7 @@ public class UserParentService implements IUserParentService {
                         commissionDetailedService.create(createCommand);
 
                         userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()));
-//                        userParent1.setCommission(userParent1.getCommission().add(BigDecimal.valueOf(0.38 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
+                        userParent1.setCommission(userParent1.getCommission().add(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP)));
                     }
                     userParentRepository.save(userParent1);
 
@@ -118,7 +118,7 @@ public class UserParentService implements IUserParentService {
                             commissionDetailedService.create(createCommand);
 
                             userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()));
-//                            userParent2.setCommission(userParent2.getCommission().add(BigDecimal.valueOf(0.12 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
+                            userParent2.setCommission(userParent2.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP)));
                         }
                         userParent2.setTodayRebate(userParent2.getTodayRebate().add(BigDecimal.valueOf(card)));
                         userParent2.setTotalRebate(userParent2.getTotalRebate().add(BigDecimal.valueOf(card)));
@@ -136,7 +136,7 @@ public class UserParentService implements IUserParentService {
                                 commissionDetailedService.create(createCommand);
 
                                 userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()));
-//                                userParent3.setCommission(userParent3.getCommission().add(BigDecimal.valueOf(0.06 * jsonObject.getFloatValue("card") / 110).setScale(2, RoundingMode.HALF_UP)));
+                                userParent3.setCommission(userParent3.getCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP)));
                             }
                             userParent3.setTodayRebate(userParent3.getTodayRebate().add(BigDecimal.valueOf(card)));
                             userParent3.setTotalRebate(userParent3.getTotalRebate().add(BigDecimal.valueOf(card)));
@@ -146,7 +146,7 @@ public class UserParentService implements IUserParentService {
                             while (null != parent) {
                                 UserParent userParent4 = userParentRepository.searchByUserId(parent);
                                 if (null == userParent4) {
-                                    return;
+                                    break;
                                 }
                                 userParent4.setTodayRebate(userParent4.getTodayRebate().add(BigDecimal.valueOf(card)));
                                 userParent4.setTotalRebate(userParent4.getTotalRebate().add(BigDecimal.valueOf(card)));

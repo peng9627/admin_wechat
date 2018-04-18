@@ -63,7 +63,7 @@ public class RechargeController extends BaseController {
 
         JsonMessage jsonMessage = new JsonMessage();
         jsonMessage.setPayType(command.getPayType().name());
-        if (null == command.getId()) {
+        if (null == command.getId() || 0 == command.getUserId()) {
             jsonMessage.setCode(1);
             jsonMessage.setMessage("id不能为空");
             return jsonMessage;
