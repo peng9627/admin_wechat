@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -171,22 +172,25 @@ public class UserController extends BaseApiController {
     @ResponseBody
     public JsonMessage lastDayRebate() {
         JsonMessage jsonMessage = new JsonMessage();
-        try {
-            jsonMessage.setCode(0);
-            long total = System.currentTimeMillis();
-            long time = System.currentTimeMillis();
-            userParentAppService.lastDayRebate();
-            List<Integer> integers = userParentAppService.userIds();
-            System.out.println(System.currentTimeMillis() - time);
-            time = System.currentTimeMillis();
-            for (Integer integer : integers) {
-                lastDayRebateCommission(integer);
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                jsonMessage.setCode(0);
+                userParentAppService.lastDayRebate();
+                notsave = false;
+            } catch (Exception e) {
+                i++;
+                System.out.println("昨日返利修改失败" + i);
             }
-            System.out.println(System.currentTimeMillis() - time);
-            System.out.println(System.currentTimeMillis() - total);
-        } catch (Exception e) {
-            jsonMessage.setData(1);
-            e.printStackTrace();
+            if (i >= 100) {
+                jsonMessage.setData(1);
+                notsave = false;
+            }
+        }
+        List<Integer> integers = userParentAppService.userIds();
+        for (Integer integer : integers) {
+            lastDayRebateCommission(integer);
         }
         return jsonMessage;
     }
