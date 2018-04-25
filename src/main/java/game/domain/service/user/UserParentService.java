@@ -7,7 +7,6 @@ import game.core.enums.FlowType;
 import game.core.pay.GameServer;
 import game.core.util.CoreDateUtils;
 import game.domain.model.user.IUserParentRepository;
-import game.domain.model.user.UserHistoryConsumption;
 import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +45,11 @@ public class UserParentService implements IUserParentService {
         if (null == userParent) {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
-                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 2);
+                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 4);
             } else {
-                myParent = new UserParent(parent, null, null, null, 2);
+                myParent = new UserParent(parent, null, null, null, 4);
                 userParentRepository.save(myParent);
-                userParent = new UserParent(userId, parent, null, null, 2);
+                userParent = new UserParent(userId, parent, null, null, 4);
             }
             userParentRepository.save(userParent);
         }
@@ -64,22 +63,13 @@ public class UserParentService implements IUserParentService {
 
     @Override
     public void consumption(JSONArray jsonArray) {
-        JSONArray notice = new JSONArray();
-        // 九州
-//        double m1 = 0.38 / 110;
-//        double m2 = 0.12 / 110;
-//        double m3 = 0.06 / 110;
-        //讯米
-        double m1 = 0.36 * 0.9 / 108;
-        double m2 = 0.12 * 0.9 / 108;
-        double m3 = 0.06 * 0.9 / 108;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
             UserParent userParent = userParentRepository.searchByUserId(jsonObject.getIntValue("userId"));
-            userConsumptionService.add(jsonObject.getIntValue("userId"), card.divide(BigDecimal.valueOf(108), 2, RoundingMode.HALF_UP));
+            userConsumptionService.add(jsonObject.getIntValue("userId"), card.setScale(2, RoundingMode.HALF_UP));
             if (null == userParent) {
-                userParent = new UserParent(jsonObject.getIntValue("userId"), null, null, null, 2);
+                userParent = new UserParent(jsonObject.getIntValue("userId"), null, null, null, 4);
             }
             userParent.setTotalConsumption(userParent.getTotalConsumption().add(card));
             userParent.setTodayConsumption(userParent.getTodayConsumption().add(card));
@@ -88,71 +78,82 @@ public class UserParentService implements IUserParentService {
             userParent.setTodayRebate(userParent.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
             userParentRepository.save(userParent);
 
-            UserParent userParent1;
-            if (1 == userParent.getLevel()) {
-                userParent1 = userParent;
-            } else if (null == userParent.getParent()) {
-                continue;
-            } else {
-                userParent1 = userParentRepository.searchByUserId(userParent.getParent());
-            }
-            if (null == userParent1 || userParent1.getLevel() != 1) {
-                continue;
-            }
-            CreateCommand createCommand = new CreateCommand();
-            createCommand.setFlowType(FlowType.IN_FLOW);
-            createCommand.setUserId(userParent1.getUserId());
-            createCommand.setMoney(BigDecimal.valueOf(m1).multiply(card).setScale(2, RoundingMode.HALF_UP));
-            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-            commissionDetailedService.create(createCommand);
+            if (null != userParent.getParent()) {
+                UserParent userParent1 = userParentRepository.searchByUserId(userParent.getParent());
+                if (null != userParent1) {
+                    switch (userParent1.getLevel()) {
+                        case 3:
+                            CreateCommand createCommand = new CreateCommand();
+                            createCommand.setFlowType(FlowType.IN_FLOW);
+                            createCommand.setUserId(userParent1.getUserId());
+                            createCommand.setMoney(BigDecimal.valueOf(0.3).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                            commissionDetailedService.create(createCommand);
 
-            userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-            userParentRepository.save(userParent1);
+                            userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParentRepository.save(userParent1);
 
-            Integer parent = userParent1.getParent();
-            if (null != parent) {
-                UserParent userParent2 = userParentRepository.searchByUserId(parent);
+                            UserParent userParent2 = userParentRepository.searchByUserId(userParent1.getParent());
+                            if (null != userParent2) {
+                                createCommand = new CreateCommand();
+                                createCommand.setUserId(userParent2.getUserId());
+                                createCommand.setMoney(BigDecimal.valueOf(0.2).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                                commissionDetailedService.create(createCommand);
 
-                createCommand = new CreateCommand();
-                createCommand.setFlowType(FlowType.IN_FLOW);
-                createCommand.setUserId(parent);
-                createCommand.setMoney(BigDecimal.valueOf(m2).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-                commissionDetailedService.create(createCommand);
+                                userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                userParentRepository.save(userParent2);
 
-                userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                userParent2.setTodayRebate(userParent2.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                userParent2.setTotalRebate(userParent2.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                userParentRepository.save(userParent2);
+                                UserParent userParent3 = userParentRepository.searchByUserId(userParent1.getParent());
+                                if (null != userParent3) {
+                                    createCommand = new CreateCommand();
+                                    createCommand.setUserId(userParent3.getUserId());
+                                    createCommand.setMoney(BigDecimal.valueOf(0.1).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                                    commissionDetailedService.create(createCommand);
 
-                parent = userParent2.getParent();
-                if (null != parent) {
-                    UserParent userParent3 = userParentRepository.searchByUserId(parent);
-                    createCommand = new CreateCommand();
-                    createCommand.setFlowType(FlowType.IN_FLOW);
-                    createCommand.setUserId(parent);
-                    createCommand.setMoney(BigDecimal.valueOf(m3).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                    createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
-                    commissionDetailedService.create(createCommand);
-
-                    userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                    userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-                    userParent3.setTodayRebate(userParent3.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                    userParent3.setTotalRebate(userParent3.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                    userParentRepository.save(userParent3);
-                    parent = userParent3.getParent();
-
-                    while (null != parent) {
-                        UserParent userParent4 = userParentRepository.searchByUserId(parent);
-                        if (null == userParent4) {
+                                    userParent3.setTodaySelfRebate(userParent3.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                    userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                    userParentRepository.save(userParent3);
+                                }
+                            }
                             break;
-                        }
-                        userParent4.setTodayRebate(userParent4.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                        userParent4.setTotalRebate(userParent4.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-                        userParentRepository.save(userParent4);
-                        parent = userParent4.getParent();
+                        case 2:
+                            createCommand = new CreateCommand();
+                            createCommand.setFlowType(FlowType.IN_FLOW);
+                            createCommand.setUserId(userParent1.getUserId());
+                            createCommand.setMoney(BigDecimal.valueOf(0.5).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                            commissionDetailedService.create(createCommand);
+
+                            userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParentRepository.save(userParent1);
+
+                            userParent2 = userParentRepository.searchByUserId(userParent1.getParent());
+                            if (null != userParent2) {
+                                createCommand = new CreateCommand();
+                                createCommand.setUserId(userParent2.getUserId());
+                                createCommand.setMoney(BigDecimal.valueOf(0.1).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                                commissionDetailedService.create(createCommand);
+
+                                userParent2.setTodaySelfRebate(userParent2.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                                userParentRepository.save(userParent2);
+                            }
+                            break;
+                        case 1:
+                            createCommand = new CreateCommand();
+                            createCommand.setFlowType(FlowType.IN_FLOW);
+                            createCommand.setUserId(userParent1.getUserId());
+                            createCommand.setMoney(BigDecimal.valueOf(0.6).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                            commissionDetailedService.create(createCommand);
+
+                            userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                            userParentRepository.save(userParent1);
+                            break;
                     }
                 }
             }
