@@ -73,6 +73,10 @@ public class UserParentService implements IUserParentService {
         double m1 = 0.36 * 0.9 / 108;
         double m2 = 0.12 * 0.9 / 108;
         double m3 = 0.06 * 0.9 / 108;
+        //汇友
+//        double m1 = 0.32 * 0.9 / 108;
+//        double m2 = 0.12 * 0.9 / 108;
+//        double m3 = 0.06 * 0.9 / 108;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());

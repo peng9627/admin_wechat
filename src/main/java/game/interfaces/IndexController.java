@@ -50,6 +50,8 @@ public class IndexController extends BaseApiController {
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fxunmizf.hi528.cn%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //讯米
             response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fxunmizf.zmbaobei.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
+            //汇友
+//            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fhuiyouzf.dcpnm.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
         } catch (Exception e) {
             e.printStackTrace();
         }

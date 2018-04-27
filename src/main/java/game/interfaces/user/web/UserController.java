@@ -106,9 +106,9 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
 
-            System.out.println("2312312321");
+            //汇友
+//            response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "iLMkYhwosr7FDczW", 32, false, "utf-8"));
             response.sendRedirect("https://fir.im/xunmi");
-            System.out.println("54523423423");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

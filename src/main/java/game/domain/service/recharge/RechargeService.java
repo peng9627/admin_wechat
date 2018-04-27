@@ -7,6 +7,7 @@ import game.core.common.id.IdFactory;
 import game.core.enums.YesOrNoStatus;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoFoundException;
+import game.core.pay.ChengfutongNotice;
 import game.core.pay.GameServer;
 import game.core.pay.wechat.WechatNotify;
 import game.core.util.CoreDateUtils;
@@ -254,6 +255,42 @@ public class RechargeService implements IRechargeService {
 //            if (null != userParent && null != userParent.getLevel() && 3 == userParent.getLevel()) {
 //                currency += rechargeSelect.getGiveCurrency();
 //            }
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("manager", 998);
+                jsonObject.put("target", recharge.getUserId());
+                if (1 == rechargeSelect.getType()) {
+                    jsonObject.put("card", currency);
+                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + currency + "&_&" + 0 + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
+                } else {
+                    jsonObject.put("gold", currency);
+                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + 0 + "&_&" + currency + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
+                }
+                String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
+                if (!CoreStringUtils.isEmpty(s)) {
+                    JSONObject result = JSONObject.parseObject(s);
+                    if (0 == result.getIntValue("error_code")) {
+                        recharge.setNotifyTime(new Date());
+                        rechargeRepository.update(recharge);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void apiChengfutongSuccess(ChengfutongNotice notice) {
+        Recharge recharge = this.searchByNo(notice.getP2_ordernumber());
+        if (null != recharge && null == recharge.getPayTime() && 0 != recharge.getIsSuccess().compareTo(YesOrNoStatus.YES)) {
+            recharge.changePayTime(new Date());
+            recharge.changePayNo(notice.getP5_orderid());
+            recharge.changeIsSuccess(YesOrNoStatus.YES);
+            rechargeRepository.update(recharge);
+
+            RechargeSelect rechargeSelect = rechargeSelectService.getById(recharge.getSelectId());
+            int currency = rechargeSelect.getCurrency();
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("manager", 998);
