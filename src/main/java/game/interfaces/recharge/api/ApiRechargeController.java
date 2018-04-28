@@ -145,7 +145,7 @@ public class ApiRechargeController extends BaseApiController {
                 if (notice.getP4_zfstate().equals("1")) {
                     rechargeAppService.chengfutongSuccess(notice);
                     logger.info("充值流水号为[" + notice.getP2_ordernumber() + "]的订单支付成功，支付方式为[" + PayType.ALL + "]");
-                    response.getWriter().write("ok");
+                    response.getWriter().write("success");
                 }
             } else {
                 logger.warn("验签失败");

@@ -14,6 +14,7 @@ import game.application.recharge.command.CreateRechargeCommand;
 import game.application.recharge.command.ListRechargeCommand;
 import game.core.common.Constants;
 import game.core.enums.PayType;
+import game.core.enums.YesOrNoStatus;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoLoginException;
 import game.core.pay.ChengfutongRecharge;
@@ -35,6 +36,7 @@ import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by pengyi
@@ -166,14 +168,14 @@ public class RechargeController extends BaseController {
             String ip = CoreHttpUtils.getClientIP(request);
             command.setIp(ip);
             command.setPayType(PayType.WECHAT);
-            Recharge recharge = rechargeAppService.recharge(command);
-
+//            Recharge recharge = rechargeAppService.recharge(command);
+            Recharge recharge = new Recharge("zf00" + new Random().nextInt(10000), command.getUserId(), BigDecimal.valueOf(10), YesOrNoStatus.NO, PayType.WECHAT, command.getId());
             ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
             chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID);
             chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
             chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
             chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
-            chengfutongRecharge.setP7_productcode("WXZFWAP");
+            chengfutongRecharge.setP7_productcode("ZFBZFWAP");
             chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
             chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
             chengfutongRecharge.setP25_terminal("1");
@@ -190,9 +192,9 @@ public class RechargeController extends BaseController {
                 return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
             }
             return new ModelAndView("/fail", "message", "支付失败");
-        } catch (ApiPayException e) {
-            logger.warn(e.getMessage());
-            return new ModelAndView("/fail", "message", "超出限额");
+//        } catch (ApiPayException e) {
+//            logger.warn(e.getMessage());
+//            return new ModelAndView("/fail", "message", "超出限额");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ModelAndView("/fail", "message", "支付失败");
