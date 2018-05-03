@@ -70,13 +70,13 @@ public class UserParentService implements IUserParentService {
 //        double m2 = 0.12 / 110;
 //        double m3 = 0.06 / 110;
         //讯米
-        double m1 = 0.36 * 0.9 / 108;
-        double m2 = 0.12 * 0.9 / 108;
-        double m3 = 0.06 * 0.9 / 108;
-        //汇友
-//        double m1 = 0.32 * 0.9 / 108;
+//        double m1 = 0.36 * 0.9 / 108;
 //        double m2 = 0.12 * 0.9 / 108;
 //        double m3 = 0.06 * 0.9 / 108;
+        //汇友
+        double m1 = 0.36 / 110;
+        double m2 = 0.16 / 110;
+        double m3 = 0.08 / 110;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
@@ -88,8 +88,6 @@ public class UserParentService implements IUserParentService {
             userParent.setTotalConsumption(userParent.getTotalConsumption().add(card));
             userParent.setTodayConsumption(userParent.getTodayConsumption().add(card));
 
-            userParent.setTotalRebate(userParent.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
-            userParent.setTodayRebate(userParent.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
             userParentRepository.save(userParent);
 
             UserParent userParent1;
@@ -112,6 +110,8 @@ public class UserParentService implements IUserParentService {
 
             userParent1.setTodaySelfRebate(userParent1.getTodaySelfRebate().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
             userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParent1.setTodayRebate(userParent1.getTodayRebate().add(card).setScale(2, RoundingMode.HALF_UP));
+            userParent1.setTotalRebate(userParent1.getTotalRebate().add(card).setScale(2, RoundingMode.HALF_UP));
             userParentRepository.save(userParent1);
 
             Integer parent = userParent1.getParent();
