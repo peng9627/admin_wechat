@@ -65,18 +65,24 @@ public class UserParentService implements IUserParentService {
 
     @Override
     public void consumption(JSONArray jsonArray) {
-        double m1 = 0.32;
+//        double m1 = 0.32 / 108 * 0.95;
+//        double m2 = 0.12 / 108 * 0.95;
+//        double m3 = 0.06 / 108 * 0.95;
+        //王牌
+        double m1 = 0.36;
         double m2 = 0.12;
         double m3 = 0.06;
         //万州
-//        double m1 = 0.36;
-//        double m2 = 0.14;
-//        double m3 = 0.10;
+//        double m1 = 0.36 / 108 * 0.95;
+//        double m2 = 0.14 / 108 * 0.95;
+//        double m3 = 0.10 / 108 * 0.95;
         JSONArray notice = new JSONArray();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             UserParent userParent = userParentRepository.searchByUserId(jsonObject.getIntValue("userId"));
-            userConsumptionService.add(jsonObject.getIntValue("userId"), BigDecimal.valueOf(jsonObject.getFloatValue("card") / 108));
+            //房卡版
+            userConsumptionService.add(jsonObject.getIntValue("userId"), BigDecimal.valueOf(jsonObject.getFloatValue("card")));
+//            userConsumptionService.add(jsonObject.getIntValue("userId"), BigDecimal.valueOf(jsonObject.getFloatValue("card") / 108));
             if (null != userParent) {
                 Integer a = userParent.getA();
                 Integer b = userParent.getB();
@@ -91,11 +97,11 @@ public class UserParentService implements IUserParentService {
                     CreateCommand createCommand = new CreateCommand();
                     createCommand.setFlowType(FlowType.IN_FLOW);
                     createCommand.setUserId(parent);
-                    createCommand.setMoney(BigDecimal.valueOf(m1 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+                    createCommand.setMoney(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                     createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                     commissionDetailedService.create(createCommand);
-                    parentUser.setCommission(parentUser.getCommission().add(BigDecimal.valueOf(m1 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                    parentUser.setTotalCommission(parentUser.getTotalCommission().add(BigDecimal.valueOf(m1 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                    parentUser.setCommission(parentUser.getCommission().add(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                    parentUser.setTotalCommission(parentUser.getTotalCommission().add(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("playerId", parent);
                     jsonObject1.put("commission", parentUser.getCommission());
@@ -106,11 +112,11 @@ public class UserParentService implements IUserParentService {
                         UserParent bUser = userParentRepository.searchByUserId(b);
                         createCommand.setFlowType(FlowType.IN_FLOW);
                         createCommand.setUserId(b);
-                        createCommand.setMoney(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                         commissionDetailedService.create(createCommand);
-                        bUser.setCommission(bUser.getCommission().add(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        bUser.setTotalCommission(bUser.getTotalCommission().add(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                        bUser.setCommission(bUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                        bUser.setTotalCommission(bUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
                         JSONObject jsonObjectB = new JSONObject();
                         jsonObjectB.put("playerId", b);
                         jsonObjectB.put("commission", bUser.getCommission());
@@ -121,11 +127,11 @@ public class UserParentService implements IUserParentService {
                             UserParent aUser = userParentRepository.searchByUserId(a);
                             createCommand.setFlowType(FlowType.IN_FLOW);
                             createCommand.setUserId(a);
-                            createCommand.setMoney(BigDecimal.valueOf(m3 / 108 * 0.95 * jsonObject.getFloatValue("card")));
+                            createCommand.setMoney(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card")));
                             createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                             commissionDetailedService.create(createCommand);
-                            aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m3 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                            aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m3 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                            aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                            aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
                             JSONObject jsonObjectA = new JSONObject();
                             jsonObjectA.put("playerId", a);
                             jsonObjectA.put("commission", aUser.getCommission());
@@ -137,11 +143,11 @@ public class UserParentService implements IUserParentService {
                         UserParent aUser = userParentRepository.searchByUserId(a);
                         createCommand.setFlowType(FlowType.IN_FLOW);
                         createCommand.setUserId(a);
-                        createCommand.setMoney(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
                         commissionDetailedService.create(createCommand);
-                        aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m2 / 108 * 0.95 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                        aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+                        aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
                         JSONObject jsonObjectA = new JSONObject();
                         jsonObjectA.put("playerId", a);
                         jsonObjectA.put("commission", aUser.getCommission());

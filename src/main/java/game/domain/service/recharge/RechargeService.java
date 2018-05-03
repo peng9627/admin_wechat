@@ -1,5 +1,6 @@
 package game.domain.service.recharge;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import game.application.recharge.command.CreateRechargeCommand;
 import game.application.recharge.command.ListRechargeCommand;
@@ -284,6 +285,13 @@ public class RechargeService implements IRechargeService {
             }
             recharge.changeIsSuccess(YesOrNoStatus.NO);
             rechargeRepository.save(recharge);
+
+            JSONArray jsonArray = new JSONArray();
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("userId", recharge.getUserId());
+            jsonObject1.put("card", recharge.getMoney());
+            jsonArray.add(jsonObject1);
+            CoreHttpUtils.urlConnection("http://127.0.0.1:8090", "jsonArray=" + jsonArray.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
         }
