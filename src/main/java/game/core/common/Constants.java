@@ -17,8 +17,8 @@ public class Constants {
     public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt71xdpbifbDazfDLiSFhbUpq8HQhiXwfNp/+uN8GEuvtSLIcRDFuC4iKHeNGEVryfRugaB6nWWfwhq4GMLaHsYnuMQEpPnImmN+UVzRUeyCQJqQ8zuR0D17qxnf2/BccL/MZlS6HTi5kMwM9QO5PFVPd7pJo8TeFfQIslx5wq4QGKUlemaVskRWpUsTvvKVsel8n5tUKun0MRY/Hcyb5qOdgDgmn4y3TqsTQbK9n30/ySkMVMrakJSRfrYs5e/3fItgQeomjUPjV7X+ySYZtmRvJYhboAXQ95v+4shOuk6/P0aX4z+TzN7YDvwwNaP8p7zmcFBsMoC98aT6eT5XBGwIDAQAB";
     public static String ALIPAY_NOTIFY_URL = "http://zf.zzjhmjg.com/api/recharge/alipay/notify";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "wxb719c4981679f888";
-    public static String WECHAT_OFFICE_APPSECRET = "4a384892fac370624d963b7927a4b033";
+    public static String WECHAT_OFFICE_APPID = "wxec034365dbe82597";
+    public static String WECHAT_OFFICE_APPSECRET = "78ceed0b0b5acef033a98fdca63053c9";
     public static String MANAGER_URL = "http://gl.zzjhmjg.com/";
 
     //大众互娱

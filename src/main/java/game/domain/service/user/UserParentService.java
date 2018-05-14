@@ -81,7 +81,8 @@ public class UserParentService implements IUserParentService {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
             UserParent userParent = userParentRepository.searchByUserId(jsonObject.getIntValue("userId"));
-            userConsumptionService.add(jsonObject.getIntValue("userId"), card.divide(BigDecimal.valueOf(108), 2, RoundingMode.HALF_UP));
+            userConsumptionService.add(jsonObject.getIntValue("userId"), card.divide(BigDecimal.valueOf(110), 2, RoundingMode.HALF_UP));
+//            userConsumptionService.add(jsonObject.getIntValue("userId"), card.divide(BigDecimal.valueOf(108), 2, RoundingMode.HALF_UP));
             if (null == userParent) {
                 userParent = new UserParent(jsonObject.getIntValue("userId"), null, null, null, 2);
             }
