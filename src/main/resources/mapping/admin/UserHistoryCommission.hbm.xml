@@ -19,5 +19,7 @@
         <property name="rebate" column="rebate" type="java.math.BigDecimal" scale="2"/>
 
         <property name="consumption" column="consumption" type="java.math.BigDecimal" scale="2"/>
+
+        <property name="allCommission" column="all_commission" type="java.math.BigDecimal" scale="2"/>
     </class>
 </hibernate-mapping>

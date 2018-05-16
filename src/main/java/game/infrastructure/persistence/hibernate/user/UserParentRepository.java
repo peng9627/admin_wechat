@@ -1,17 +1,16 @@
 package game.infrastructure.persistence.hibernate.user;
 
-import game.core.util.CoreDateUtils;
 import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.infrastructure.persistence.hibernate.generic.AbstractHibernateGenericRepository;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
 
     @Override
     public void updateLastDayRebate() {
-        String hqlUpdate = "update UserParent u set u.lastdayRebate = u.todayRebate, u.lastdayTotalRebate = u.totalRebate, u.todayRebate = 0, u.lastdaySelfRebate = u.todaySelfRebate, u.todaySelfRebate = 0, u.lastDayConsumption = u.todayConsumption, u.todayConsumption = 0";
+        String hqlUpdate = "update UserParent u set u.lastDayCommission = u.todayCommission, u.todayCommission = 0, u.lastDayConsumption = todayConsumption, u.todayConsumption = 0";
         int updatedEntities = getSession().createQuery(hqlUpdate)
                 .executeUpdate();
     }
@@ -56,6 +55,25 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
         Criteria criteria = getSession().createCriteria(this.getPersistentClass());
         criteria.add(Restrictions.eq("parent", parent));
         return criteria.list();
+    }
+
+    @Override
+    public List<Integer> daqu() {
+        Criteria criteria = getSession().createCriteria(this.getPersistentClass());
+        criteria.add(Restrictions.isNull("parent"));
+        ProjectionList projectionList = Projections.projectionList();
+        projectionList.add(Projections.property("userId"));
+        criteria.setProjection(projectionList);
+        return criteria.list();
+    }
+
+    @Override
+    public void addCommission(String id, BigDecimal commission) {
+        String hqlUpdate = "update UserParent u set u.lastDayCommission = u.lastDayCommission + " + commission.doubleValue() + ", " +
+                "u.commission = u.commission + " + commission.doubleValue() + ", " +
+                "u.totalCommission = u.totalCommission + " + commission.doubleValue() + " where u.id = '" + id + "'";
+        int updatedEntities = getSession().createQuery(hqlUpdate)
+                .executeUpdate();
     }
 
 }

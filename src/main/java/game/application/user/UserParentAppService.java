@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pengyi
@@ -60,8 +62,29 @@ public class UserParentAppService implements IUserParentAppService {
     }
 
     @Override
-    public void lastDayRebateCommission(Integer userId) {
-        userParentService.lastDayRebateCommission(userId);
+    @Transactional(readOnly = true)
+    public List<Integer> daqu() {
+        return userParentService.daqu();
+    }
+
+    @Override
+    public List<UserParent> byParentId(Integer userId) {
+        return userParentService.byParent(userId);
+    }
+
+    @Override
+    public List<UserParent> allUserParent() {
+        return userParentService.allUserParent();
+    }
+
+    @Override
+    public void addCommission(Integer parentId, BigDecimal commission) {
+        userParentService.addCommission(parentId, commission);
+    }
+
+    @Override
+    public void addAllCommission(Map<String, BigDecimal> updateCommands) {
+        userParentService.addAllCommission(updateCommands);
     }
 
 }

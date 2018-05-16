@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by pengyi
@@ -27,10 +28,17 @@ public class CommissionDetailedService implements ICommissionDetailedService {
     public void create(CreateCommand command) {
         CommissionDetailed commissionDetailed;
         if (0 < command.getMoney().compareTo(BigDecimal.ZERO)) {
-            commissionDetailed = new CommissionDetailed(command.getUserId(), FlowType.IN_FLOW, command.getMoney(), command.getDescription());
+            commissionDetailed = new CommissionDetailed(command.getUserId(), FlowType.IN_FLOW, command.getMoney(), command.getDescription(), command.getFromUser());
         } else {
-            commissionDetailed = new CommissionDetailed(command.getUserId(), FlowType.OUT_FLOW, BigDecimal.ZERO.subtract(command.getMoney()), command.getDescription());
+            commissionDetailed = new CommissionDetailed(command.getUserId(), FlowType.OUT_FLOW, BigDecimal.ZERO.subtract(command.getMoney()), command.getDescription(), command.getFromUser());
         }
         commissionDetailedRepository.save(commissionDetailed);
+    }
+
+    @Override
+    public void createAll(List<CreateCommand> createCommands) {
+        for (CreateCommand createCommand : createCommands) {
+            create(createCommand);
+        }
     }
 }

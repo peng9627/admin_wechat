@@ -20,6 +20,8 @@ public class UserHistoryConsumption extends ConcurrencySafeEntity {
 
     private BigDecimal consumption;
 
+    private BigDecimal allCommission;
+
     public Date getDate() {
         return date;
     }
@@ -52,13 +54,23 @@ public class UserHistoryConsumption extends ConcurrencySafeEntity {
         this.consumption = consumption;
     }
 
+    public BigDecimal getAllCommission() {
+        return allCommission;
+    }
+
+    public void setAllCommission(BigDecimal allCommission) {
+        this.allCommission = allCommission;
+    }
+
     public UserHistoryConsumption() {
     }
 
-    public UserHistoryConsumption(Date date, Integer userId, BigDecimal rebate, BigDecimal consumption) {
+    public UserHistoryConsumption(Date date, Integer userId, BigDecimal rebate, BigDecimal consumption, BigDecimal allCommission) {
         this.date = date;
         this.userId = userId;
         this.rebate = rebate;
         this.consumption = consumption;
+        this.allCommission = allCommission;
+        setCreateDate(new Date());
     }
 }

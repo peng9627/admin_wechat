@@ -3,7 +3,9 @@ package game.domain.service.user;
 import com.alibaba.fastjson.JSONArray;
 import game.domain.model.user.UserParent;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pengyi
@@ -24,5 +26,11 @@ public interface IUserParentService {
 
     List<Integer> userIds();
 
-    void lastDayRebateCommission(Integer userId);
+    List<Integer> daqu();
+
+    List<UserParent> allUserParent();
+
+    void addCommission(Integer parentId, BigDecimal commission);
+
+    void addAllCommission(Map<String, BigDecimal> updateCommands);
 }

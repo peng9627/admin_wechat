@@ -27,5 +27,7 @@
 
         <property name="description" column="description" type="java.lang.String"/>
 
+        <property name="fromUser" column="from_user" type="java.lang.Integer"/>
+
     </class>
 </hibernate-mapping>

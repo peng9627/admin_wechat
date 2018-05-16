@@ -15,6 +15,7 @@ public class CreateCommand {
     private BigDecimal money;
     private FlowType flowType;  //资金流向类型
     private String description;     //说明
+    private Integer fromUser;
 
     public int getUserId() {
         return userId;
@@ -46,6 +47,14 @@ public class CreateCommand {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(Integer fromUser) {
+        this.fromUser = fromUser;
     }
 }
 

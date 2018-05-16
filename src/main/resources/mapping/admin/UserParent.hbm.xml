@@ -24,23 +24,11 @@
 
         <property name="commission" column="commission" type="java.math.BigDecimal" scale="2"/>
 
-        <property name="todayRebate" column="today_rebate" type="java.math.BigDecimal" scale="2"/>
+        <property name="totalCommission" column="total_commission" type="java.math.BigDecimal" scale="2"/>
 
-        <property name="totalRebate" column="total_rebate" type="java.math.BigDecimal" scale="2"/>
+        <property name="todayCommission" column="today_commission" type="java.math.BigDecimal" scale="2"/>
 
-        <property name="lastdayRebate" column="lastday_rebate" type="java.math.BigDecimal" scale="2"/>
-
-        <property name="lastdayTotalRebate" column="lastday_total_rebate" type="java.math.BigDecimal" scale="2"/>
-
-        <property name="lastdayRebateCommission" column="lastday_rebate_commission" type="java.math.BigDecimal"
-                  scale="2"/>
-
-        <property name="todaySelfRebate" column="today_self_rebate" type="java.math.BigDecimal" scale="2"/>
-
-        <property name="lastdaySelfRebate" column="lastday_self_rebate" type="java.math.BigDecimal" scale="2"/>
-
-        <property name="lastdaySelfRebateCommission" column="lastday_self_rebate_commission" type="java.math.BigDecimal"
-                  scale="2"/>
+        <property name="lastDayCommission" column="last_day_commission" type="java.math.BigDecimal" scale="2"/>
 
         <property name="totalConsumption" column="total_consumption" type="java.math.BigDecimal"
                   scale="2"/>

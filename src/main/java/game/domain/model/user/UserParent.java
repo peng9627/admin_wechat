@@ -17,14 +17,9 @@ public class UserParent extends ConcurrencySafeEntity {
     private Integer a;                  //a级代理
     private Integer level;              //等级
     private BigDecimal commission;      //佣金
-    private BigDecimal todayRebate;     //今日佣金
-    private BigDecimal totalRebate;     //总佣金
-    private BigDecimal lastdayRebateCommission;//昨日佣金返利(获得的)
-    private BigDecimal lastdayRebate;     //昨日佣金
-    private BigDecimal lastdayTotalRebate;//昨日总佣金
-    private BigDecimal todaySelfRebate;     //今日自己佣金
-    private BigDecimal lastdaySelfRebate;     //昨日自己佣金
-    private BigDecimal lastdaySelfRebateCommission;//昨日自己佣金返利(获得的)
+    private BigDecimal totalCommission; //总佣金
+    private BigDecimal todayCommission;//今日佣金
+    private BigDecimal lastDayCommission;//昨日佣金
     private BigDecimal totalConsumption;//总消费
     private BigDecimal todayConsumption;//今日消费
     private BigDecimal lastDayConsumption;//昨日消费
@@ -78,68 +73,28 @@ public class UserParent extends ConcurrencySafeEntity {
         this.commission = commission;
     }
 
-    public BigDecimal getTodayRebate() {
-        return todayRebate;
+    public BigDecimal getTotalCommission() {
+        return totalCommission;
     }
 
-    public void setTodayRebate(BigDecimal todayRebate) {
-        this.todayRebate = todayRebate;
+    public void setTotalCommission(BigDecimal totalCommission) {
+        this.totalCommission = totalCommission;
     }
 
-    public BigDecimal getTotalRebate() {
-        return totalRebate;
+    public BigDecimal getTodayCommission() {
+        return todayCommission;
     }
 
-    public void setTotalRebate(BigDecimal totalRebate) {
-        this.totalRebate = totalRebate;
+    public void setTodayCommission(BigDecimal todayCommission) {
+        this.todayCommission = todayCommission;
     }
 
-    public BigDecimal getLastdayRebateCommission() {
-        return lastdayRebateCommission;
+    public BigDecimal getLastDayCommission() {
+        return lastDayCommission;
     }
 
-    public void setLastdayRebateCommission(BigDecimal lastdayRebateCommission) {
-        this.lastdayRebateCommission = lastdayRebateCommission;
-    }
-
-    public BigDecimal getLastdayRebate() {
-        return lastdayRebate;
-    }
-
-    public void setLastdayRebate(BigDecimal lastdayRebate) {
-        this.lastdayRebate = lastdayRebate;
-    }
-
-    public BigDecimal getLastdayTotalRebate() {
-        return lastdayTotalRebate;
-    }
-
-    public void setLastdayTotalRebate(BigDecimal lastdayTotalRebate) {
-        this.lastdayTotalRebate = lastdayTotalRebate;
-    }
-
-    public BigDecimal getTodaySelfRebate() {
-        return todaySelfRebate;
-    }
-
-    public void setTodaySelfRebate(BigDecimal todaySelfRebate) {
-        this.todaySelfRebate = todaySelfRebate;
-    }
-
-    public BigDecimal getLastdaySelfRebate() {
-        return lastdaySelfRebate;
-    }
-
-    public void setLastdaySelfRebate(BigDecimal lastdaySelfRebate) {
-        this.lastdaySelfRebate = lastdaySelfRebate;
-    }
-
-    public BigDecimal getLastdaySelfRebateCommission() {
-        return lastdaySelfRebateCommission;
-    }
-
-    public void setLastdaySelfRebateCommission(BigDecimal lastdaySelfRebateCommission) {
-        this.lastdaySelfRebateCommission = lastdaySelfRebateCommission;
+    public void setLastDayCommission(BigDecimal lastDayCommission) {
+        this.lastDayCommission = lastDayCommission;
     }
 
     public BigDecimal getTotalConsumption() {
@@ -184,14 +139,9 @@ public class UserParent extends ConcurrencySafeEntity {
         this.a = a;
         this.level = level;
         this.commission = BigDecimal.ZERO;
-        this.todayRebate = BigDecimal.ZERO;
-        this.totalRebate = BigDecimal.ZERO;
-        this.lastdayRebate = BigDecimal.ZERO;
-        this.lastdayTotalRebate = BigDecimal.ZERO;
-        this.lastdayRebateCommission = BigDecimal.ZERO;
-        this.todaySelfRebate = BigDecimal.ZERO;
-        this.lastdaySelfRebate = BigDecimal.ZERO;
-        this.lastdaySelfRebateCommission = BigDecimal.ZERO;
+        this.totalCommission = BigDecimal.ZERO;
+        this.todayCommission = BigDecimal.ZERO;
+        this.lastDayCommission = BigDecimal.ZERO;
         this.totalConsumption = BigDecimal.ZERO;
         this.todayConsumption = BigDecimal.ZERO;
         this.lastDayConsumption = BigDecimal.ZERO;

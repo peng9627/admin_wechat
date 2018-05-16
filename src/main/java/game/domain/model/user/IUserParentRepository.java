@@ -3,6 +3,7 @@ package game.domain.model.user;
 import game.infrastructure.persistence.hibernate.generic.IHibernateGenericRepository;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -19,4 +20,8 @@ public interface IUserParentRepository<T, ID extends Serializable> extends IHibe
     List<Integer> userIds();
 
     List<T> byParent(Integer parent);
+
+    List<Integer> daqu();
+
+    void addCommission(String id, BigDecimal commission);
 }

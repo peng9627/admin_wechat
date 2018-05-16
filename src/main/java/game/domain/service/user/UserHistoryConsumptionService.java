@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by pengyi
@@ -21,8 +22,9 @@ public class UserHistoryConsumptionService implements IUserHistoryConsumptionSer
     }
 
     @Override
-    public void add(int userId, BigDecimal rebate, Date date, BigDecimal consumption) {
-        UserHistoryConsumption userConsumption = new UserHistoryConsumption(date, userId, rebate, consumption);
-        userHistoryConsumptionRepository.save(userConsumption);
+    public void createAll(List<UserHistoryConsumption> userHistoryConsumptions) {
+        for (UserHistoryConsumption userHistoryConsumption : userHistoryConsumptions) {
+            userHistoryConsumptionRepository.save(userHistoryConsumption);
+        }
     }
 }

@@ -17,6 +17,7 @@ public class CommissionDetailed extends ConcurrencySafeEntity {
     private BigDecimal money;                  //金额
     private BigDecimal relMoney;                  //金额
     private String description;         //说明（）
+    private Integer fromUser;         //
 
     public Integer getUser() {
         return user;
@@ -58,16 +59,25 @@ public class CommissionDetailed extends ConcurrencySafeEntity {
         this.description = description;
     }
 
+    public Integer getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(Integer fromUser) {
+        this.fromUser = fromUser;
+    }
+
     public CommissionDetailed() {
         super();
     }
 
-    public CommissionDetailed(Integer user, FlowType flowType, BigDecimal money, String description) {
+    public CommissionDetailed(Integer user, FlowType flowType, BigDecimal money, String description, Integer fromUser) {
         super();
         this.user = user;
         this.flowType = flowType;
         this.money = money;
         this.description = description;
+        this.fromUser = fromUser;
         setCreateDate(new Date());
     }
 }
