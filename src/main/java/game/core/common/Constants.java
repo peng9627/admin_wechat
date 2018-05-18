@@ -221,7 +221,7 @@ public class Constants {
     public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhDpM3Xbr3O76WgwJd/De+qlugtpO+Aov/kp/yxMMo0mmpKCU4ICT4FcKWbJZccK+U+n7PYdu3TlX1/hr8WHu82suT4Ez7Hu10cW7gfuMCQpgIAsmYrt2VZcKXQHN/Pq2fmRRCrZnozeCIaMKCw+bMaswDddVYebHeKpS8UstZqfG7c0T0wyzp2pRUQ5jN4PuCyjFWSQvcRDu+vHRIJx2jW7YYe+G3ROQldQa6Hh11MldizA35FJiVKSLPWBvVXGNI0RTj9CwpL/goBTkrCCzlCNPl8CioslAOnSk2WfpHSdD3+xWoTvjPiwx5jNo4BPncOcPmeuCtd6mxs9Qf9tFawIDAQAB";
     public static String ALIPAY_NOTIFY_URL = "http://zf.xingdikj.com/api/recharge/alipay/notify";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "";
-    public static String WECHAT_OFFICE_APPSECRET = "";
+    public static String WECHAT_OFFICE_APPID = "wx8a6996423885997d";
+    public static String WECHAT_OFFICE_APPSECRET = "f4cfc02b32eb2a461940bb692fdd3f3e";
     public static String MANAGER_URL = "";
 }
