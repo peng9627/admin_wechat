@@ -31,16 +31,14 @@ public class UserParentService implements IUserParentService {
     private final GameServer gameServer;
     private final ICommissionDetailedService commissionDetailedService;
     private final IUserConsumptionService userConsumptionService;
-    private final IUserHistoryConsumptionService userHistoryConsumptionService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserParentService(IUserParentRepository<UserParent, String> userParentRepository, GameServer gameServer, ICommissionDetailedService commissionDetailedService, IUserConsumptionService userConsumptionService, IUserHistoryConsumptionService userHistoryConsumptionService) {
+    public UserParentService(IUserParentRepository<UserParent, String> userParentRepository, GameServer gameServer, ICommissionDetailedService commissionDetailedService, IUserConsumptionService userConsumptionService) {
         this.userParentRepository = userParentRepository;
         this.gameServer = gameServer;
         this.commissionDetailedService = commissionDetailedService;
         this.userConsumptionService = userConsumptionService;
-        this.userHistoryConsumptionService = userHistoryConsumptionService;
     }
 
     @Override
@@ -50,12 +48,8 @@ public class UserParentService implements IUserParentService {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
                 userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 1);
-            } else {
-                myParent = new UserParent(parent, null, null, null, 1);
-                userParentRepository.save(myParent);
-                userParent = new UserParent(userId, parent, null, null, 1);
+                userParentRepository.save(userParent);
             }
-            userParentRepository.save(userParent);
         }
 
     }

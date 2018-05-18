@@ -29,7 +29,7 @@ public class IndexController extends BaseApiController {
     public void index(@PathVariable String id, HttpServletResponse response) {
         try {
             //江湖麻将馆
-            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.zzjhmjg.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
+//            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.zzjhmjg.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //大众互娱
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxbb4693c82ec025a5&redirect_uri=http%3a%2f%2fdazhonghuyuzf.chuangmikeji.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //山城
@@ -52,6 +52,8 @@ public class IndexController extends BaseApiController {
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fxunmizf.zmbaobei.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //汇友
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fhuiyouzf.dcpnm.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
+            //江湖2
+            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.dcpnm.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
         } catch (Exception e) {
             e.printStackTrace();
         }
