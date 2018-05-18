@@ -191,7 +191,8 @@ public class RechargeService implements IRechargeService {
             throw new NoFoundException("id为" + command.getId() + "的记录不存在");
         }
         BigDecimal todayTotal = rechargeRepository.todayTotal(command.getUserId());
-        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(2000))) {
+        //TODO 支付限额
+        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(5000))) {
             throw new ApiPayException("超出限额");
         }
         String no = idFactory.getNextId();
