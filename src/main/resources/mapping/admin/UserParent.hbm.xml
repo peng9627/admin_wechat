@@ -22,6 +22,8 @@
 
         <property name="level" column="level" type="java.lang.Integer"/>
 
+        <property name="area" column="area" type="java.lang.Integer"/>
+
         <property name="commission" column="commission" type="java.math.BigDecimal" scale="2"/>
 
         <property name="totalCommission" column="total_commission" type="java.math.BigDecimal" scale="2"/>
@@ -41,5 +43,6 @@
 
         <property name="bindDate" column="bind_date" type="java.util.Date"/>
 
+        <property name="groupName" column="group_name" type="java.lang.String"/>
     </class>
 </hibernate-mapping>

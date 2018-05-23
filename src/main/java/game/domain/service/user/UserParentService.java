@@ -1,11 +1,14 @@
 package game.domain.service.user;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import game.application.commissiondetails.command.CreateCommand;
 import game.core.enums.FlowType;
 import game.core.pay.GameServer;
 import game.core.util.CoreDateUtils;
+import game.core.util.CoreHttpUtils;
+import game.core.util.CoreStringUtils;
 import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +51,20 @@ public class UserParentService implements IUserParentService {
         if (null == userParent) {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
-                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 1);
+                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 1, myParent.getGroupName());
+                Map<String, Object> map = new HashMap<>();
+                String str = 1 + "&_&" + userId + "&_&" + 20 + "&_&" + gameServer.getKey();
+                String enc = CoreStringUtils.md5(str, 32, false, "utf-8");
+                map.put("manager", 1);
+                map.put("target", userId);
+                map.put("permission", 20);
+                map.put("enc", enc);
+                String result = null;
+                try {
+                    String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "update_permission=" + JSON.toJSONString(map));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 userParentRepository.save(userParent);
             }
         }

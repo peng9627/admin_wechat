@@ -119,9 +119,7 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
 
-            //汇友
-            response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "iLMkYhwosr7FDczW", 32, false, "utf-8"));
-//            response.sendRedirect("https://fir.im/xunmi");
+            response.sendRedirect("https://fir.im/ssjhtest");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -169,7 +167,7 @@ public class UserController extends BaseApiController {
                 notsave = false;
             } catch (Exception e) {
                 i++;
-                System.out.println("返利错误重新返利" + i);
+                logger.error("返利错误重新返利" + i, e);
             }
             if (i >= 100) {
                 jsonMessage.setData(1);

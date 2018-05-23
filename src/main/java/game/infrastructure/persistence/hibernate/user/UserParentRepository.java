@@ -61,6 +61,7 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
     public List<Integer> daqu() {
         Criteria criteria = getSession().createCriteria(this.getPersistentClass());
         criteria.add(Restrictions.isNull("parent"));
+        criteria.add(Restrictions.eq("area", 1));
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.property("userId"));
         criteria.setProjection(projectionList);

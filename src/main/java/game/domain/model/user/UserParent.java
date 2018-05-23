@@ -16,6 +16,7 @@ public class UserParent extends ConcurrencySafeEntity {
     private Integer b;                  //b级代理
     private Integer a;                  //a级代理
     private Integer level;              //等级
+    private Integer area;
     private BigDecimal commission;      //佣金
     private BigDecimal totalCommission; //总佣金
     private BigDecimal todayCommission;//今日佣金
@@ -24,6 +25,7 @@ public class UserParent extends ConcurrencySafeEntity {
     private BigDecimal todayConsumption;//今日消费
     private BigDecimal lastDayConsumption;//昨日消费
     private Date bindDate;              //绑定时间
+    private String groupName;           //团队,名称
 
     public Integer getUserId() {
         return userId;
@@ -59,6 +61,14 @@ public class UserParent extends ConcurrencySafeEntity {
 
     public Integer getLevel() {
         return level;
+    }
+
+    public void setArea(Integer area) {
+        this.area = area;
+    }
+
+    public Integer getArea() {
+        return area;
     }
 
     public void setLevel(Integer level) {
@@ -129,10 +139,18 @@ public class UserParent extends ConcurrencySafeEntity {
         this.bindDate = bindDate;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     public UserParent() {
     }
 
-    public UserParent(Integer userId, Integer parent, Integer b, Integer a, Integer level) {
+    public UserParent(Integer userId, Integer parent, Integer b, Integer a, Integer level, String groupName) {
         this.userId = userId;
         this.parent = parent;
         this.b = b;
@@ -145,6 +163,7 @@ public class UserParent extends ConcurrencySafeEntity {
         this.totalConsumption = BigDecimal.ZERO;
         this.todayConsumption = BigDecimal.ZERO;
         this.lastDayConsumption = BigDecimal.ZERO;
+        this.groupName = groupName;
         setCreateDate(new Date());
         this.bindDate = new Date();
     }
