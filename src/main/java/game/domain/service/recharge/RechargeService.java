@@ -192,7 +192,11 @@ public class RechargeService implements IRechargeService {
         }
         BigDecimal todayTotal = rechargeRepository.todayTotal(command.getUserId());
         //TODO 支付限额
-        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(5000))) {
+        //悠悠
+//        int xiane = 5000;
+        //赤水
+        int xiane = 2000;
+        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(xiane))) {
             throw new ApiPayException("超出限额");
         }
         String no = idFactory.getNextId();
@@ -261,6 +265,13 @@ public class RechargeService implements IRechargeService {
                 if (0 == result.getIntValue("error_code")) {
                     recharge.setNotifyTime(new Date());
                     rechargeRepository.update(recharge);
+
+                    JSONArray jsonArray = new JSONArray();
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("userId", recharge.getUserId());
+                    jsonObject1.put("card", recharge.getMoney());
+                    jsonArray.add(jsonObject1);
+                    CoreHttpUtils.urlConnection("http://127.0.0.1:8090/user/consumption", "jsonArray=" + jsonArray.toJSONString());
                     return;
                 }
             }
@@ -271,6 +282,13 @@ public class RechargeService implements IRechargeService {
                 if (0 == result.getIntValue("error_code")) {
                     recharge.setNotifyTime(new Date());
                     rechargeRepository.update(recharge);
+
+                    JSONArray jsonArray = new JSONArray();
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("userId", recharge.getUserId());
+                    jsonObject1.put("card", recharge.getMoney());
+                    jsonArray.add(jsonObject1);
+                    CoreHttpUtils.urlConnection("http://127.0.0.1:8090/user/consumption", "jsonArray=" + jsonArray.toJSONString());
                     return;
                 }
             }
@@ -281,18 +299,19 @@ public class RechargeService implements IRechargeService {
                 if (0 == result.getIntValue("error_code")) {
                     recharge.setNotifyTime(new Date());
                     rechargeRepository.update(recharge);
+
+                    JSONArray jsonArray = new JSONArray();
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("userId", recharge.getUserId());
+                    jsonObject1.put("card", recharge.getMoney());
+                    jsonArray.add(jsonObject1);
+                    CoreHttpUtils.urlConnection("http://127.0.0.1:8090/user/consumption", "jsonArray=" + jsonArray.toJSONString());
                     return;
                 }
             }
             recharge.changeIsSuccess(YesOrNoStatus.NO);
             rechargeRepository.save(recharge);
 
-            JSONArray jsonArray = new JSONArray();
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("userId", recharge.getUserId());
-            jsonObject1.put("card", recharge.getMoney());
-            jsonArray.add(jsonObject1);
-            CoreHttpUtils.urlConnection("http://127.0.0.1:8090", "jsonArray=" + jsonArray.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
         }

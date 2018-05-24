@@ -28,6 +28,7 @@ public class IndexController extends BaseApiController {
     @RequestMapping(value = "/share/{id}")
     public void index(@PathVariable String id, HttpServletResponse response) {
         try {
+            //TODO
             //江湖麻将馆
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx988152b62477873e&redirect_uri=http%3a%2f%2fzf.zzjhmjg.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //大众互娱
@@ -50,8 +51,10 @@ public class IndexController extends BaseApiController {
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fxinjiujiuzf.chuangmikeji.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //牛英雄
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fniuyingxiongzf.hi528.cn%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
-            //悠悠
-            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.xingdikj.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
+//            悠悠
+//            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.xingdikj.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
+            //赤水
+            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.chishuicg.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
         } catch (Exception e) {
             e.printStackTrace();
         }

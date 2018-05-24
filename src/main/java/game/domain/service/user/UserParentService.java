@@ -69,9 +69,11 @@ public class UserParentService implements IUserParentService {
 //        double m2 = 0.12 / 108 * 0.95;
 //        double m3 = 0.06 / 108 * 0.95;
         //王牌
-        double m1 = 0.36;
-        double m2 = 0.12;
-        double m3 = 0.06;
+//        double m1 = 0.36;
+//        double m2 = 0.12;
+//        double m3 = 0.06;
+        //赤水
+        double m1 = 0.4;
         //万州
 //        double m1 = 0.36 / 108 * 0.95;
 //        double m2 = 0.14 / 108 * 0.95;
@@ -98,7 +100,7 @@ public class UserParentService implements IUserParentService {
                     createCommand.setFlowType(FlowType.IN_FLOW);
                     createCommand.setUserId(parent);
                     createCommand.setMoney(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
-                    createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
+                    createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card"));
                     commissionDetailedService.create(createCommand);
                     parentUser.setCommission(parentUser.getCommission().add(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
                     parentUser.setTotalCommission(parentUser.getTotalCommission().add(BigDecimal.valueOf(m1 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
@@ -108,53 +110,53 @@ public class UserParentService implements IUserParentService {
                     jsonObject1.put("extensionCount", userParentRepository.spreadCount(parent));
                     notice.add(jsonObject1);
                     userParentRepository.save(parentUser);
-                    if (null != b && b != parent.intValue()) {
-                        UserParent bUser = userParentRepository.searchByUserId(b);
-                        createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(b);
-                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
-                        createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
-                        commissionDetailedService.create(createCommand);
-                        bUser.setCommission(bUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        bUser.setTotalCommission(bUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        JSONObject jsonObjectB = new JSONObject();
-                        jsonObjectB.put("playerId", b);
-                        jsonObjectB.put("commission", bUser.getCommission());
-                        jsonObjectB.put("extensionCount", userParentRepository.spreadCount(b));
-                        notice.add(jsonObjectB);
-                        userParentRepository.save(bUser);
-                        if (null != a && a != parent.intValue()) {
-                            UserParent aUser = userParentRepository.searchByUserId(a);
-                            createCommand.setFlowType(FlowType.IN_FLOW);
-                            createCommand.setUserId(a);
-                            createCommand.setMoney(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card")));
-                            createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
-                            commissionDetailedService.create(createCommand);
-                            aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                            aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                            JSONObject jsonObjectA = new JSONObject();
-                            jsonObjectA.put("playerId", a);
-                            jsonObjectA.put("commission", aUser.getCommission());
-                            jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
-                            notice.add(jsonObjectA);
-                            userParentRepository.save(aUser);
-                        }
-                    } else if (null != b && b == parent.intValue() && null != a) {
-                        UserParent aUser = userParentRepository.searchByUserId(a);
-                        createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(a);
-                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
-                        createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
-                        commissionDetailedService.create(createCommand);
-                        aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
-                        JSONObject jsonObjectA = new JSONObject();
-                        jsonObjectA.put("playerId", a);
-                        jsonObjectA.put("commission", aUser.getCommission());
-                        jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
-                        notice.add(jsonObjectA);
-                        userParentRepository.save(aUser);
-                    }
+//                    if (null != b && b != parent.intValue()) {
+//                        UserParent bUser = userParentRepository.searchByUserId(b);
+//                        createCommand.setFlowType(FlowType.IN_FLOW);
+//                        createCommand.setUserId(b);
+//                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+//                        createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
+//                        commissionDetailedService.create(createCommand);
+//                        bUser.setCommission(bUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                        bUser.setTotalCommission(bUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                        JSONObject jsonObjectB = new JSONObject();
+//                        jsonObjectB.put("playerId", b);
+//                        jsonObjectB.put("commission", bUser.getCommission());
+//                        jsonObjectB.put("extensionCount", userParentRepository.spreadCount(b));
+//                        notice.add(jsonObjectB);
+//                        userParentRepository.save(bUser);
+//                        if (null != a && a != parent.intValue()) {
+//                            UserParent aUser = userParentRepository.searchByUserId(a);
+//                            createCommand.setFlowType(FlowType.IN_FLOW);
+//                            createCommand.setUserId(a);
+//                            createCommand.setMoney(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card")));
+//                            createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
+//                            commissionDetailedService.create(createCommand);
+//                            aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                            aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m3 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                            JSONObject jsonObjectA = new JSONObject();
+//                            jsonObjectA.put("playerId", a);
+//                            jsonObjectA.put("commission", aUser.getCommission());
+//                            jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
+//                            notice.add(jsonObjectA);
+//                            userParentRepository.save(aUser);
+//                        }
+//                    } else if (null != b && b == parent.intValue() && null != a) {
+//                        UserParent aUser = userParentRepository.searchByUserId(a);
+//                        createCommand.setFlowType(FlowType.IN_FLOW);
+//                        createCommand.setUserId(a);
+//                        createCommand.setMoney(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP));
+//                        createCommand.setDescription(userParent.getUserId() + "消耗" + jsonObject.getFloatValue("card") + "房卡");
+//                        commissionDetailedService.create(createCommand);
+//                        aUser.setCommission(aUser.getCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                        aUser.setTotalCommission(aUser.getTotalCommission().add(BigDecimal.valueOf(m2 * jsonObject.getFloatValue("card"))).setScale(2, RoundingMode.HALF_UP));
+//                        JSONObject jsonObjectA = new JSONObject();
+//                        jsonObjectA.put("playerId", a);
+//                        jsonObjectA.put("commission", aUser.getCommission());
+//                        jsonObjectA.put("extensionCount", userParentRepository.spreadCount(a));
+//                        notice.add(jsonObjectA);
+//                        userParentRepository.save(aUser);
+//                    }
                 }
             } else {
                 userParent = new UserParent(jsonObject.getIntValue("userId"), null, null, null, 3);

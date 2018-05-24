@@ -45,7 +45,7 @@ public class UserController extends BaseApiController {
      * @param request Request
      */
     @RequestMapping(value = "/login_wechat")
-    public ModelAndView loginWeChat(HttpServletRequest request, HttpSession httpSession, HttpServletResponse response) {
+    public void loginWeChat(HttpServletRequest request, HttpSession httpSession, HttpServletResponse response) {
         UserRepresentation userRepresentation = null;
         try {
             Map<String, String[]> map = request.getParameterMap();
@@ -98,14 +98,15 @@ public class UserController extends BaseApiController {
 //                CoreHttpUtils.urlConnectionByRsa("http://127.0.0.1:10410/1", JSON.toJSONString(socketRequest, ss, features));
             }
 //            return new ModelAndView("redirect:/user/person");
+            //TODO
             if (null != userRepresentation) {
                 response.sendRedirect(Constants.MANAGER_URL + "mobile/index?accountId=" + userRepresentation.getUserId() + "&key=" + CoreStringUtils.md5(userRepresentation.getUserId() + "jhmjg", 32, false, "utf-8"));
-                return null;
+//                return null;
             }
+//            response.sendRedirect("https://fir.im/chishuimajiang");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
-        return new ModelAndView("");
     }
 
 //    @RequestMapping(value = "/person")
