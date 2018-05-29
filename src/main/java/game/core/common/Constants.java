@@ -177,8 +177,8 @@ public class Constants {
 //    public static String WECHAT_OFFICE_APPSECRET = "55991e0d8d9294fa6f21b70513837682";
 //    public static String MANAGER_URL = "http://xunmigl.hi528.cn/";
 
-    public static String CHENGFUTONGID = "0";
-    public static String CHENGFUTONGKEY = "0";
+    public static String CHENGFUTONGID = "68018059461601";
+    public static String CHENGFUTONGKEY = "0468091218061lCrSAlt";
 
 //    //抚顺
 //    public static String WECHAT_APPID = "wxf6c90cc17ad523b2";                       //appid

@@ -186,12 +186,8 @@ public class RechargeService implements IRechargeService {
             throw new NoFoundException("id为" + command.getId() + "的记录不存在");
         }
         BigDecimal todayTotal = rechargeRepository.todayTotal(command.getUserId());
-        //九州
-//        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(2000))) {
-//            throw new ApiPayException("超出限额");
-//        }
-        //讯米
-        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(1000))) {
+        //江湖
+        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(2000))) {
             throw new ApiPayException("超出限额");
         }
         String no = idFactory.getNextId();

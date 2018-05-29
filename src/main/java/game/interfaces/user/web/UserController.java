@@ -119,7 +119,7 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
 
-            response.sendRedirect("https://fir.im/ssjhtest");
+            response.sendRedirect("https://fir.im/ssjhxz/");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -296,14 +296,14 @@ public class UserController extends BaseApiController {
                         sanji = BigDecimal.ZERO;
                     }
                     sanji = sanji.add(userParent1.getLastDayCommission());
-                    commission = commission.add(sanji.multiply(BigDecimal.valueOf(0.05)).setScale(2, RoundingMode.HALF_UP));
+                    commission = commission.add(sanji.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
 
                     //下下级给自己反的
                     if (null != parentId && 0 != g.setScale(2, RoundingMode.HALF_UP).doubleValue()) {
                         CreateCommand createCommand = new CreateCommand();
                         createCommand.setFlowType(FlowType.IN_FLOW);
                         createCommand.setUserId(parentId);
-                        createCommand.setMoney(sanji.multiply(BigDecimal.valueOf(0.05)).setScale(2, RoundingMode.HALF_UP));
+                        createCommand.setMoney(sanji.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
                         createCommand.setDescription(userParent1.getUserId() + "返利" + sanji + "佣金");
                         createCommand.setFromUser(userParent1.getUserId());
                         createCommands.add(createCommand);
@@ -321,18 +321,18 @@ public class UserController extends BaseApiController {
                     }
                 }
             }
-            commission = commission.add(total.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
+            commission = commission.add(total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP));
 
             selfAllCommission = selfAllCommission.add(total);
             allCommission.put(userId, selfAllCommission);
 
             //直属下级给自己反的
             if (null != parentId) {
-                if (0 != total.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP).doubleValue()) {
+                if (0 != total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP).doubleValue()) {
                     CreateCommand createCommand = new CreateCommand();
                     createCommand.setFlowType(FlowType.IN_FLOW);
                     createCommand.setUserId(parentId);
-                    createCommand.setMoney(total.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
+                    createCommand.setMoney(total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP));
                     createCommand.setDescription(userParent.getUserId() + "返利" + total.doubleValue() + "佣金");
                     createCommand.setFromUser(userParent.getUserId());
                     createCommands.add(createCommand);

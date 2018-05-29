@@ -79,7 +79,7 @@ public class UserParentService implements IUserParentService {
     @Override
     public void consumption(JSONArray jsonArray) {
         JSONArray notice = new JSONArray();
-        double m1 = 0.4 / 108;
+        double m1 = 0.4 / 100;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
