@@ -28,6 +28,7 @@ public class IndexController extends BaseApiController {
     @RequestMapping(value = "/share/{id}")
     public void index(@PathVariable String id, HttpServletResponse response) {
         try {
+            //TODO
             //江湖麻将馆
 //            response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Constants.WECHAT_OFFICE_APPID + "&redirect_uri=http%3a%2f%2fzf.zzjhmjg.com%2fuser%2flogin_wechat&response_type=code&scope=snsapi_userinfo&state=" + id + "#wechat_redirect");
             //大众互娱

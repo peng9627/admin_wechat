@@ -51,20 +51,20 @@ public class UserParentService implements IUserParentService {
         if (null == userParent) {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
-                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 1, myParent.getGroupName());
-                Map<String, Object> map = new HashMap<>();
-                String str = 1 + "&_&" + userId + "&_&" + 20 + "&_&" + gameServer.getKey();
-                String enc = CoreStringUtils.md5(str, 32, false, "utf-8");
-                map.put("manager", 1);
-                map.put("target", userId);
-                map.put("permission", 20);
-                map.put("enc", enc);
-                String result = null;
-                try {
-                    String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "update_permission=" + JSON.toJSONString(map));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 2, myParent.getGroupName());
+//                Map<String, Object> map = new HashMap<>();
+//                String str = 1 + "&_&" + userId + "&_&" + 20 + "&_&" + gameServer.getKey();
+//                String enc = CoreStringUtils.md5(str, 32, false, "utf-8");
+//                map.put("manager", 1);
+//                map.put("target", userId);
+//                map.put("permission", 20);
+//                map.put("enc", enc);
+//                String result = null;
+//                try {
+//                    String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "update_permission=" + JSON.toJSONString(map));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 userParentRepository.save(userParent);
             }
         }
@@ -90,19 +90,27 @@ public class UserParentService implements IUserParentService {
             }
             userParent.setTotalConsumption(userParent.getTotalConsumption().add(card));
             userParent.setTodayConsumption(userParent.getTodayConsumption().add(card));
+            userParentRepository.save(userParent);
+
+            UserParent userParent1 = null;
+            if (userParent.getLevel() == 1) {
+                userParent1 = userParent;
+            } else {
+                userParent1 = userParentRepository.searchByUserId(userParent.getParent());
+            }
 
             CreateCommand createCommand = new CreateCommand();
             createCommand.setFlowType(FlowType.IN_FLOW);
-            createCommand.setUserId(userParent.getUserId());
+            createCommand.setUserId(userParent1.getUserId());
             createCommand.setMoney(BigDecimal.valueOf(m1).multiply(card).setScale(2, RoundingMode.HALF_UP));
-            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+            createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue());
             createCommand.setFromUser(userParent.getUserId());
             commissionDetailedService.create(createCommand);
 
-            userParent.setCommission(userParent.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-            userParent.setTodayCommission(userParent.getTodayCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-            userParent.setTotalCommission(userParent.getTotalCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
-            userParentRepository.save(userParent);
+            userParent1.setCommission(userParent1.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParent1.setTodayCommission(userParent1.getTodayCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParent1.setTotalCommission(userParent1.getTotalCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+            userParentRepository.save(userParent1);
         }
     }
 
