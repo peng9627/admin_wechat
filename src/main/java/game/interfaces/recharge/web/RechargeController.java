@@ -171,7 +171,7 @@ public class RechargeController extends BaseController {
             Recharge recharge = rechargeAppService.recharge(command);
 //            Recharge recharge = new Recharge("zf00" + new Random().nextInt(10000), command.getUserId(), BigDecimal.valueOf(10), YesOrNoStatus.NO, PayType.WECHAT, command.getId());
             ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
-            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID);
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
             chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
             chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
             chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
@@ -215,7 +215,7 @@ public class RechargeController extends BaseController {
             Recharge recharge = rechargeAppService.recharge(command);
 
             ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
-            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID);
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
             chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
             chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
             chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
@@ -256,11 +256,11 @@ public class RechargeController extends BaseController {
             Recharge recharge = rechargeAppService.recharge(command);
 
             ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
-            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID);
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_ALIPAY);
             chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
             chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
             chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
-            chengfutongRecharge.setP7_productcode("ZFBZFWAP");
+            chengfutongRecharge.setP7_productcode("ZFBZZWAP");
             chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
             chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
             chengfutongRecharge.setP25_terminal("1");
@@ -272,7 +272,7 @@ public class RechargeController extends BaseController {
                     chengfutongRecharge.setP25_terminal("2");
                 }
             }
-            chengfutongRecharge.signset();
+            chengfutongRecharge.signZZset();
             return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
         } catch (ApiPayException e) {
             logger.warn(e.getMessage());

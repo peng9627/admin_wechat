@@ -18,12 +18,14 @@ import game.interfaces.shared.api.BaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/recharge")
@@ -142,6 +144,23 @@ public class ApiRechargeController extends BaseApiController {
     public void rechargeChengfutongNotify(ChengfutongNotice notice, HttpServletResponse response) {
         try {
             if (notice.signset()) {
+                if (notice.getP4_zfstate().equals("1")) {
+                    rechargeAppService.chengfutongSuccess(notice);
+                    logger.info("充值流水号为[" + notice.getP2_ordernumber() + "]的订单支付成功，支付方式为[" + PayType.ALL + "]");
+                    response.getWriter().write("success");
+                }
+            } else {
+                logger.warn("验签失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_zz/notify")
+    public void rechargeChengfutongZZNotify(ChengfutongNotice notice, HttpServletResponse response) {
+        try {
+            if (notice.signZZset()) {
                 if (notice.getP4_zfstate().equals("1")) {
                     rechargeAppService.chengfutongSuccess(notice);
                     logger.info("充值流水号为[" + notice.getP2_ordernumber() + "]的订单支付成功，支付方式为[" + PayType.ALL + "]");

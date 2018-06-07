@@ -99,7 +99,18 @@ public class ChengfutongRecharge {
                         p3_money + "&" +
                         p6_ordertime + "&" +
                         p7_productcode + "&" +
-                        Constants.CHENGFUTONGKEY, 32, true, "utf-8"
+                        Constants.CHENGFUTONGKEY_WECHAT, 32, true, "utf-8"
+        );
+    }
+
+    public void signZZset() {
+        p8_sign = CoreStringUtils.md5(
+                p1_yingyongnum + "&" +
+                        p2_ordernumber + "&" +
+                        p3_money + "&" +
+                        p6_ordertime + "&" +
+                        p7_productcode + "&" +
+                        Constants.CHENGFUTONGKEY_ALIPAY, 32, true, "utf-8"
         );
     }
 }

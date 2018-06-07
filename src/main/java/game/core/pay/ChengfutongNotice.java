@@ -130,6 +130,20 @@ public class ChengfutongNotice {
                 p8_charset + "&" +
                 p9_signtype + "&" +
                 p11_pdesc + "&" +
-                Constants.CHENGFUTONGKEY, 32, true, "utf-8"));
+                Constants.CHENGFUTONGKEY_WECHAT, 32, true, "utf-8"));
+    }
+
+    public boolean signZZset() {
+        return p10_sign.equals(CoreStringUtils.md5(p1_yingyongnum + "&" +
+                p2_ordernumber + "&" +
+                p3_money + "&" +
+                p4_zfstate + "&" +
+                p5_orderid + "&" +
+                p6_productcode + "&" +
+                p7_bank_card_code + "&" +
+                p8_charset + "&" +
+                p9_signtype + "&" +
+                p11_pdesc + "&" +
+                Constants.CHENGFUTONGKEY_ALIPAY, 32, true, "utf-8"));
     }
 }

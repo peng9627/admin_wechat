@@ -8,5 +8,9 @@
         </id>
 
         <property name="account" column="account_name" type="java.lang.String"/>
+
+        <property name="card" column="card" type="java.lang.Integer"/>
+
+        <property name="gold" column="gold" type="java.lang.Integer"/>
     </class>
 </hibernate-mapping>

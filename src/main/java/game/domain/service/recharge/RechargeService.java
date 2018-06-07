@@ -16,6 +16,7 @@ import game.core.util.CoreStringUtils;
 import game.domain.model.recharge.IRechargeRepository;
 import game.domain.model.recharge.Recharge;
 import game.domain.model.recharge.RechargeSelect;
+import game.domain.model.user.User;
 import game.domain.model.user.UserParent;
 import game.domain.service.user.IUserParentService;
 import game.domain.service.user.IUserService;
@@ -24,6 +25,8 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +48,7 @@ public class RechargeService implements IRechargeService {
     private final GameServer gameServer;
     private final IRechargeSelectService rechargeSelectService;
     private final IUserParentService userParentService;
+    private final Logger logger = LoggerFactory.getLogger(RechargeService.class);
 
     @Autowired
     public RechargeService(IRechargeRepository<Recharge, String> rechargeRepository, IUserService userService, IdFactory idFactory, GameServer gameServer, IRechargeSelectService rechargeSelectService, IUserParentService userParentService) {
@@ -203,31 +207,11 @@ public class RechargeService implements IRechargeService {
             recharge.changePayTime(CoreDateUtils.parseDate(notify.getTime_end(), "yyyyMMddHHmmss"));
             recharge.changePayNo(notify.getTransaction_id());
             recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
             rechargeRepository.update(recharge);
-
-            RechargeSelect rechargeSelect = rechargeSelectService.getById(recharge.getSelectId());
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("manager", 998);
-                jsonObject.put("target", recharge.getUserId());
-                if (1 == rechargeSelect.getType()) {
-                    jsonObject.put("card", rechargeSelect.getCurrency());
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + rechargeSelect.getCurrency() + "&_&" + 0 + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                } else {
-                    jsonObject.put("gold", rechargeSelect.getCurrency());
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + 0 + "&_&" + rechargeSelect.getCurrency() + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                }
-                String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
-                if (!CoreStringUtils.isEmpty(s)) {
-                    JSONObject result = JSONObject.parseObject(s);
-                    if (0 == result.getIntValue("error_code")) {
-                        recharge.setNotifyTime(new Date());
-                        rechargeRepository.update(recharge);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            success(recharge);
         }
     }
 
@@ -243,36 +227,67 @@ public class RechargeService implements IRechargeService {
             recharge.changePayTime(CoreDateUtils.parseDate(params.get("gmt_payment"), "yyyy-MM-dd HH:mm:ss"));
             recharge.changePayNo(params.get("trade_no"));
             recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
+            rechargeRepository.update(recharge);
+            success(recharge);
+        }
+    }
+
+    private void success(Recharge recharge) {
+        RechargeSelect rechargeSelect = rechargeSelectService.getById(recharge.getSelectId());
+        int currency = rechargeSelect.getCurrency();
+        UserParent userParent = userParentService.byUserId(recharge.getUserId());
+        if (null != userParent) {
+            currency += rechargeSelect.getGiveCurrency();
+        }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("manager", 998);
+            jsonObject.put("target", recharge.getUserId());
+            if (1 == rechargeSelect.getType()) {
+                jsonObject.put("card", currency);
+                jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + currency + "&_&" + 0 + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
+            } else {
+                jsonObject.put("gold", currency);
+                jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + 0 + "&_&" + currency + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
+            }
+            String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
+            logger.info("第一次支付加卡返回" + s);
+            if (!CoreStringUtils.isEmpty(s)) {
+                JSONObject result = JSONObject.parseObject(s);
+                if (0 == result.getIntValue("error_code")) {
+                    recharge.setNotifyTime(new Date());
+                    rechargeRepository.update(recharge);
+                    return;
+                }
+            }
+            s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
+            logger.info("第二次支付加卡返回" + s);
+            if (!CoreStringUtils.isEmpty(s)) {
+                JSONObject result = JSONObject.parseObject(s);
+                if (0 == result.getIntValue("error_code")) {
+                    recharge.setNotifyTime(new Date());
+                    rechargeRepository.update(recharge);
+                    return;
+                }
+            }
+            s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
+            logger.info("第三次支付加卡返回" + s);
+            if (!CoreStringUtils.isEmpty(s)) {
+                JSONObject result = JSONObject.parseObject(s);
+                if (0 == result.getIntValue("error_code")) {
+                    recharge.setNotifyTime(new Date());
+                    rechargeRepository.update(recharge);
+                    return;
+                }
+            }
+            recharge.changeIsSuccess(YesOrNoStatus.NO);
             rechargeRepository.update(recharge);
 
-            RechargeSelect rechargeSelect = rechargeSelectService.getById(recharge.getSelectId());
-            int currency = rechargeSelect.getCurrency();
-//            UserParent userParent = userParentService.byUserId(recharge.getUserId());
-//            if (null != userParent && null != userParent.getLevel() && 3 == userParent.getLevel()) {
-//                currency += rechargeSelect.getGiveCurrency();
-//            }
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("manager", 998);
-                jsonObject.put("target", recharge.getUserId());
-                if (1 == rechargeSelect.getType()) {
-                    jsonObject.put("card", currency);
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + currency + "&_&" + 0 + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                } else {
-                    jsonObject.put("gold", currency);
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + 0 + "&_&" + currency + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                }
-                String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
-                if (!CoreStringUtils.isEmpty(s)) {
-                    JSONObject result = JSONObject.parseObject(s);
-                    if (0 == result.getIntValue("error_code")) {
-                        recharge.setNotifyTime(new Date());
-                        rechargeRepository.update(recharge);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -283,32 +298,11 @@ public class RechargeService implements IRechargeService {
             recharge.changePayTime(new Date());
             recharge.changePayNo(notice.getP5_orderid());
             recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
             rechargeRepository.update(recharge);
-
-            RechargeSelect rechargeSelect = rechargeSelectService.getById(recharge.getSelectId());
-            int currency = rechargeSelect.getCurrency();
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("manager", 998);
-                jsonObject.put("target", recharge.getUserId());
-                if (1 == rechargeSelect.getType()) {
-                    jsonObject.put("card", currency);
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + currency + "&_&" + 0 + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                } else {
-                    jsonObject.put("gold", currency);
-                    jsonObject.put("enc", CoreStringUtils.md5(998 + "&_&" + 0 + "&_&" + recharge.getUserId() + "&_&" + 0 + "&_&" + currency + "&_&" + gameServer.getKey(), 32, false, "utf-8"));
-                }
-                String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "add_card=" + jsonObject.toJSONString());
-                if (!CoreStringUtils.isEmpty(s)) {
-                    JSONObject result = JSONObject.parseObject(s);
-                    if (0 == result.getIntValue("error_code")) {
-                        recharge.setNotifyTime(new Date());
-                        rechargeRepository.update(recharge);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            success(recharge);
         }
     }
 }
