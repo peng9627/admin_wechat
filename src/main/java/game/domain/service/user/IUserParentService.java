@@ -20,17 +20,11 @@ public interface IUserParentService {
 
     UserParent byUserId(Integer userId);
 
-    List<UserParent> byParent(Integer parent);
-
     void lastDayRebate();
-
-    List<Integer> userIds();
-
-    List<Integer> daqu();
 
     List<UserParent> allUserParent();
 
-    void addCommission(Integer parentId, BigDecimal commission);
+    List<Integer> daqu();
 
-    void addAllCommission(Map<String, BigDecimal> updateCommands);
+    void addAllDaquCommission(Map<String, BigDecimal> updateCommands);
 }

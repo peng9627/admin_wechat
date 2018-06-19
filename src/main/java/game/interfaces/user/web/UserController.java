@@ -119,7 +119,7 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
 
-            response.sendRedirect("https://fir.im/ssjhxz/");
+            response.sendRedirect("https://fir.im/xinyuetest/");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -238,25 +238,39 @@ public class UserController extends BaseApiController {
                 commissionDetailsAppService.createAll(createCommands);
                 userHistoryConsumptionAppService.createAll(userHistoryConsumptions);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean notsave = true;
-                        int i = 0;
-                        while (notsave) {
-                            try {
-                                userParentAppService.addAllCommission(updateCommands);
-                                notsave = false;
-                            } catch (Exception e) {
-                                i++;
-                                logger.error("昨日返利保存失败" + e.getMessage(), e);
-                            }
-                            if (i >= 100) {
-                                notsave = false;
+                List<Map<String, BigDecimal>> maps = new ArrayList<>();
+                for (int j = 0; j < (updateCommands.size() / 200) + 1; j++) {
+                    maps.add(new HashMap<>());
+                }
+
+                int j = 0;
+                for (Map.Entry<String, BigDecimal> entry : updateCommands.entrySet()) {
+                    maps.get(j++ % maps.size()).put(entry.getKey(), entry.getValue());
+                }
+
+                for (Map<String, BigDecimal> map : maps) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean notsave = true;
+                            int i = 0;
+                            while (notsave) {
+                                try {
+                                    long time = System.currentTimeMillis();
+                                    userParentAppService.addAllDaquCommission(map);
+                                    System.out.println("---" + (System.currentTimeMillis() - time));
+                                    notsave = false;
+                                } catch (Exception e) {
+                                    i++;
+                                    logger.error("昨日返利保存失败" + e.getMessage(), e);
+                                }
+                                if (i >= 100) {
+                                    notsave = false;
+                                }
                             }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
 
                 notsave = false;
                 jsonMessage.setCode(0);
@@ -275,80 +289,42 @@ public class UserController extends BaseApiController {
     @RequestMapping(value = "/lastday_rebate_commission")
     @ResponseBody
     public BigDecimal lastDayCommission(Integer userId, Integer parentId) {
-        BigDecimal commission = BigDecimal.ZERO;//给上级反的
-        long time = System.currentTimeMillis();
+        BigDecimal selfAllCommission = BigDecimal.ZERO;
         try {
             UserParent userParent = userParentMap.get(userId);
-            UserParent parent = userParentMap.get(parentId);
-            BigDecimal total = userParent.getLastDayCommission();//当前玩家
-
-            BigDecimal selfAllCommission = BigDecimal.ZERO;
-
+            BigDecimal daquCommission = BigDecimal.ZERO;
             List<UserParent> userParents = parent_userParent.get(userId);
             if (null != userParents && userParents.size() > 0) {
                 for (UserParent userParent1 : userParents) {
-
                     BigDecimal g = lastDayCommission(userParent1.getUserId(), userId);
-                    total = total.add(g).setScale(2, RoundingMode.HALF_UP);
-
-                    BigDecimal sanji = updateCommands.get(userParent1.getId());
-                    if (null == sanji) {
-                        sanji = BigDecimal.ZERO;
-                    }
-                    sanji = sanji.add(userParent1.getLastDayCommission());
-                    commission = commission.add(sanji.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
-
-                    //下下级给自己反的
-                    if (null != parentId && 0 != g.setScale(2, RoundingMode.HALF_UP).doubleValue()) {
-                        CreateCommand createCommand = new CreateCommand();
-                        createCommand.setFlowType(FlowType.IN_FLOW);
-                        createCommand.setUserId(parentId);
-                        createCommand.setMoney(sanji.multiply(BigDecimal.valueOf(0.1)).setScale(2, RoundingMode.HALF_UP));
-                        createCommand.setDescription(userParent1.getUserId() + "返利" + sanji + "佣金");
-                        createCommand.setFromUser(userParent1.getUserId());
-                        createCommands.add(createCommand);
-
-                        if (0 != commission.doubleValue()) {
-                            if (!updateCommands.containsKey(parent.getId())) {
-                                updateCommands.put(parent.getId(), BigDecimal.ZERO);
-                            }
-                            updateCommands.replace(parent.getId(), updateCommands.get(parent.getId()).add(createCommand.getMoney()));
-                        }
-                    }
-
+                    daquCommission = daquCommission.subtract(g.multiply(userParent1.getRebateRatio()).setScale(2, RoundingMode.HALF_UP));
                     if (allCommission.containsKey(userParent1.getUserId())) {
                         selfAllCommission = selfAllCommission.add(allCommission.get(userParent1.getUserId()));
                     }
                 }
             }
-            commission = commission.add(total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP));
-
-            selfAllCommission = selfAllCommission.add(total);
+            selfAllCommission = selfAllCommission.add(userParent.getLastDayCommission());
             allCommission.put(userId, selfAllCommission);
 
-            //直属下级给自己反的
-            if (null != parentId) {
-                if (0 != total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP).doubleValue()) {
-                    CreateCommand createCommand = new CreateCommand();
-                    createCommand.setFlowType(FlowType.IN_FLOW);
-                    createCommand.setUserId(parentId);
-                    createCommand.setMoney(total.multiply(BigDecimal.valueOf(0.15)).setScale(2, RoundingMode.HALF_UP));
-                    createCommand.setDescription(userParent.getUserId() + "返利" + total.doubleValue() + "佣金");
-                    createCommand.setFromUser(userParent.getUserId());
-                    createCommands.add(createCommand);
-                    if (!updateCommands.containsKey(parent.getId())) {
-                        updateCommands.put(parent.getId(), BigDecimal.ZERO);
-                    }
-                    updateCommands.replace(parent.getId(), updateCommands.get(parent.getId()).add(createCommand.getMoney()));
+            daquCommission = daquCommission.add(selfAllCommission.multiply(userParent.getRebateRatio()).setScale(2, RoundingMode.HALF_UP));
+
+            if (0 != daquCommission.compareTo(BigDecimal.ZERO)) {
+                CreateCommand createCommand = new CreateCommand();
+                createCommand.setFlowType(FlowType.IN_FLOW);
+                createCommand.setUserId(userId);
+                createCommand.setMoney(daquCommission);
+                createCommand.setDescription(userId + "大区返利" + daquCommission + "佣金");
+                createCommands.add(createCommand);
+                if (!updateCommands.containsKey(userParent.getId())) {
+                    updateCommands.put(userParent.getId(), BigDecimal.ZERO);
                 }
+                updateCommands.replace(userParent.getId(), updateCommands.get(userParent.getId()).add(createCommand.getMoney()));
             }
-
-            userHistoryConsumptions.add(new UserHistoryConsumption(CoreDateUtils.addDay(new Date(), -1), userId, total, userParent.getLastDayConsumption(), selfAllCommission));
-
+            userHistoryConsumptions.add(new UserHistoryConsumption(CoreDateUtils.addDay(new Date(), -1), userId, userParent.getLastDayCommission(), userParent.getLastDayConsumption(), selfAllCommission));
             logger.info("parent" + parentId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return commission;
+        return selfAllCommission;
     }
 }

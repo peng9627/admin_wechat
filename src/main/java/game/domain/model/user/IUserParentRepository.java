@@ -17,11 +17,7 @@ public interface IUserParentRepository<T, ID extends Serializable> extends IHibe
 
     void updateLastDayRebate();
 
-    List<Integer> userIds();
-
-    List<T> byParent(Integer parent);
-
     List<Integer> daqu();
 
-    void addCommission(String id, BigDecimal commission);
+    void addDaquCommission(String user, BigDecimal value);
 }

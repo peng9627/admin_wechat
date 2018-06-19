@@ -4,7 +4,6 @@ import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.infrastructure.persistence.hibernate.generic.AbstractHibernateGenericRepository;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -42,22 +41,6 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
     }
 
     @Override
-    public List<Integer> userIds() {
-        Criteria criteria = getSession().createCriteria(this.getPersistentClass());
-        ProjectionList projectionList = Projections.projectionList();
-        projectionList.add(Projections.property("userId"));
-        criteria.setProjection(projectionList);
-        return criteria.list();
-    }
-
-    @Override
-    public List<UserParent> byParent(Integer parent) {
-        Criteria criteria = getSession().createCriteria(this.getPersistentClass());
-        criteria.add(Restrictions.eq("parent", parent));
-        return criteria.list();
-    }
-
-    @Override
     public List<Integer> daqu() {
         Criteria criteria = getSession().createCriteria(this.getPersistentClass());
         criteria.add(Restrictions.isNull("parent"));
@@ -69,10 +52,9 @@ public class UserParentRepository extends AbstractHibernateGenericRepository<Use
     }
 
     @Override
-    public void addCommission(String id, BigDecimal commission) {
-        String hqlUpdate = "update UserParent u set u.lastDayCommission = u.lastDayCommission + " + commission.doubleValue() + ", " +
-                "u.commission = u.commission + " + commission.doubleValue() + ", " +
-                "u.totalCommission = u.totalCommission + " + commission.doubleValue() + " where u.id = '" + id + "'";
+    public void addDaquCommission(String id, BigDecimal commission) {
+        String hqlUpdate = "update UserParent u set u.daquCommission = u.daquCommission + " + commission.doubleValue() + ", " +
+                "u.daquTotalCommission = u.daquTotalCommission + " + commission.doubleValue() + " where u.id = '" + id + "'";
         int updatedEntities = getSession().createQuery(hqlUpdate)
                 .executeUpdate();
     }

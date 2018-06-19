@@ -57,8 +57,8 @@ public class UserParentAppService implements IUserParentAppService {
     }
 
     @Override
-    public List<Integer> userIds() {
-        return userParentService.userIds();
+    public List<UserParent> allUserParent() {
+        return userParentService.allUserParent();
     }
 
     @Override
@@ -68,23 +68,8 @@ public class UserParentAppService implements IUserParentAppService {
     }
 
     @Override
-    public List<UserParent> byParentId(Integer userId) {
-        return userParentService.byParent(userId);
-    }
-
-    @Override
-    public List<UserParent> allUserParent() {
-        return userParentService.allUserParent();
-    }
-
-    @Override
-    public void addCommission(Integer parentId, BigDecimal commission) {
-        userParentService.addCommission(parentId, commission);
-    }
-
-    @Override
-    public void addAllCommission(Map<String, BigDecimal> updateCommands) {
-        userParentService.addAllCommission(updateCommands);
+    public void addAllDaquCommission(Map<String, BigDecimal> updateCommands) {
+        userParentService.addAllDaquCommission(updateCommands);
     }
 
 }

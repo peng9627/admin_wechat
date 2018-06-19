@@ -26,6 +26,9 @@ public class UserParent extends ConcurrencySafeEntity {
     private BigDecimal lastDayConsumption;//昨日消费
     private Date bindDate;              //绑定时间
     private String groupName;           //团队,名称
+    private BigDecimal rebateRatio;     //返利比例
+    private BigDecimal daquCommission;      //大区佣金
+    private BigDecimal daquTotalCommission; //大区总佣金
 
     public Integer getUserId() {
         return userId;
@@ -147,6 +150,30 @@ public class UserParent extends ConcurrencySafeEntity {
         this.groupName = groupName;
     }
 
+    public BigDecimal getRebateRatio() {
+        return rebateRatio;
+    }
+
+    public void setRebateRatio(BigDecimal rebateRatio) {
+        this.rebateRatio = rebateRatio;
+    }
+
+    public BigDecimal getDaquCommission() {
+        return daquCommission;
+    }
+
+    public void setDaquCommission(BigDecimal daquCommission) {
+        this.daquCommission = daquCommission;
+    }
+
+    public BigDecimal getDaquTotalCommission() {
+        return daquTotalCommission;
+    }
+
+    public void setDaquTotalCommission(BigDecimal daquTotalCommission) {
+        this.daquTotalCommission = daquTotalCommission;
+    }
+
     public UserParent() {
     }
 
@@ -163,6 +190,9 @@ public class UserParent extends ConcurrencySafeEntity {
         this.totalConsumption = BigDecimal.ZERO;
         this.todayConsumption = BigDecimal.ZERO;
         this.lastDayConsumption = BigDecimal.ZERO;
+        this.rebateRatio = BigDecimal.ZERO;
+        this.daquCommission = BigDecimal.ZERO;
+        this.daquTotalCommission = BigDecimal.ZERO;
         this.groupName = groupName;
         setCreateDate(new Date());
         this.bindDate = new Date();

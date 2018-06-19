@@ -1,14 +1,10 @@
 package game.domain.service.user;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import game.application.commissiondetails.command.CreateCommand;
 import game.core.enums.FlowType;
 import game.core.pay.GameServer;
-import game.core.util.CoreDateUtils;
-import game.core.util.CoreHttpUtils;
-import game.core.util.CoreStringUtils;
 import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
@@ -19,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +73,10 @@ public class UserParentService implements IUserParentService {
     @Override
     public void consumption(JSONArray jsonArray) {
         JSONArray notice = new JSONArray();
-        double m1 = 0.4 / 100;
+        //讯米
+        double m1 = 0.4 * 0.9 / 108;
+        double m2 = 0.12 * 0.9 / 108;
+        double m3 = 0.08 * 0.9 / 108;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
@@ -95,10 +92,14 @@ public class UserParentService implements IUserParentService {
             UserParent userParent1 = null;
             if (userParent.getLevel() == 1) {
                 userParent1 = userParent;
+            } else if (null == userParent.getParent()) {
+                continue;
             } else {
                 userParent1 = userParentRepository.searchByUserId(userParent.getParent());
             }
-
+            if (null == userParent1 || userParent1.getLevel() != 1) {
+                continue;
+            }
             CreateCommand createCommand = new CreateCommand();
             createCommand.setFlowType(FlowType.IN_FLOW);
             createCommand.setUserId(userParent1.getUserId());
@@ -111,6 +112,39 @@ public class UserParentService implements IUserParentService {
             userParent1.setTodayCommission(userParent1.getTodayCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
             userParent1.setTotalCommission(userParent1.getTotalCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
             userParentRepository.save(userParent1);
+
+            Integer parent = userParent1.getParent();
+            if (null != parent) {
+                UserParent userParent2 = userParentRepository.searchByUserId(parent);
+
+                createCommand = new CreateCommand();
+                createCommand.setFlowType(FlowType.IN_FLOW);
+                createCommand.setUserId(parent);
+                createCommand.setMoney(BigDecimal.valueOf(m2).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                commissionDetailedService.create(createCommand);
+
+                userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                userParent2.setTodayCommission(userParent2.getTodayCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                userParent2.setTotalCommission(userParent2.getTotalCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                userParentRepository.save(userParent2);
+
+                parent = userParent2.getParent();
+                if (null != parent) {
+                    UserParent userParent3 = userParentRepository.searchByUserId(parent);
+                    createCommand = new CreateCommand();
+                    createCommand.setFlowType(FlowType.IN_FLOW);
+                    createCommand.setUserId(parent);
+                    createCommand.setMoney(BigDecimal.valueOf(m3).multiply(card).setScale(2, RoundingMode.HALF_UP));
+                    createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                    commissionDetailedService.create(createCommand);
+
+                    userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                    userParent3.setTodayCommission(userParent3.getTodayCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                    userParent3.setTotalCommission(userParent3.getTotalCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
+                    userParentRepository.save(userParent3);
+                }
+            }
         }
     }
 
@@ -120,23 +154,8 @@ public class UserParentService implements IUserParentService {
     }
 
     @Override
-    public List<UserParent> byParent(Integer parent) {
-        return userParentRepository.byParent(parent);
-    }
-
-    @Override
     public void lastDayRebate() {
         userParentRepository.updateLastDayRebate();
-    }
-
-    @Override
-    public List<Integer> userIds() {
-        return userParentRepository.userIds();
-    }
-
-    @Override
-    public List<Integer> daqu() {
-        return userParentRepository.daqu();
     }
 
     @Override
@@ -145,18 +164,14 @@ public class UserParentService implements IUserParentService {
     }
 
     @Override
-    public void addCommission(Integer parentId, BigDecimal commission) {
-        UserParent userParent = byUserId(parentId);
-        userParent.setCommission(userParent.getCommission().add(commission));
-        userParent.setLastDayCommission(userParent.getLastDayCommission().add(commission));
-        userParent.setTotalCommission(userParent.getTotalCommission().add(commission));
-        userParentRepository.save(userParent);
+    public List<Integer> daqu() {
+        return userParentRepository.daqu();
     }
 
     @Override
-    public void addAllCommission(Map<String, BigDecimal> updateCommands) {
+    public void addAllDaquCommission(Map<String, BigDecimal> updateCommands) {
         for (Map.Entry<String, BigDecimal> entry : updateCommands.entrySet()) {
-            userParentRepository.addCommission(entry.getKey(), entry.getValue());
+            userParentRepository.addDaquCommission(entry.getKey(), entry.getValue());
         }
     }
 

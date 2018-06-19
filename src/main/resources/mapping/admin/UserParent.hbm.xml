@@ -24,25 +24,50 @@
 
         <property name="area" column="area" type="java.lang.Integer"/>
 
-        <property name="commission" column="commission" type="java.math.BigDecimal" scale="2"/>
+        <property name="commission" type="java.math.BigDecimal" scale="2">
+            <column name="commission" default="0"/>
+        </property>
 
-        <property name="totalCommission" column="total_commission" type="java.math.BigDecimal" scale="2"/>
+        <property name="totalCommission" type="java.math.BigDecimal" scale="2">
+            <column name="total_commission" default="0"/>
+        </property>
 
-        <property name="todayCommission" column="today_commission" type="java.math.BigDecimal" scale="2"/>
+        <property name="todayCommission" type="java.math.BigDecimal" scale="2">
+            <column name="today_commission" default="0"/>
+        </property>
 
-        <property name="lastDayCommission" column="last_day_commission" type="java.math.BigDecimal" scale="2"/>
+        <property name="lastDayCommission" type="java.math.BigDecimal" scale="2">
+            <column name="last_day_commission" default="0"/>
+        </property>
 
-        <property name="totalConsumption" column="total_consumption" type="java.math.BigDecimal"
-                  scale="2"/>
+        <property name="totalConsumption" type="java.math.BigDecimal" scale="2">
+            <column name="total_consumption" default="0"/>
+        </property>
 
-        <property name="todayConsumption" column="today_consumption" type="java.math.BigDecimal"
-                  scale="2"/>
+        <property name="todayConsumption" type="java.math.BigDecimal" scale="2">
+            <column name="today_consumption" default="0"/>
+        </property>
 
-        <property name="lastDayConsumption" column="last_day_consumption" type="java.math.BigDecimal"
-                  scale="2"/>
+        <property name="lastDayConsumption" type="java.math.BigDecimal" scale="2">
+            <column name="last_day_consumption" default="0"/>
+        </property>
 
         <property name="bindDate" column="bind_date" type="java.util.Date"/>
 
         <property name="groupName" column="group_name" type="java.lang.String"/>
+
+        <property name="rebateRatio" type="java.math.BigDecimal" scale="2">
+            <column name="rebate_ratio" default="0"/>
+        </property>
+
+        <property name="daquCommission" type="java.math.BigDecimal" scale="2">
+            <column name="daqu_commission" default="0"/>
+        </property>
+
+        <property name="daquTotalCommission" type="java.math.BigDecimal" scale="2">
+            <column name="daqu_total_commission" default="0"/>
+        </property>
+
+
     </class>
 </hibernate-mapping>

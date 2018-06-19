@@ -177,10 +177,10 @@ public class Constants {
 //    public static String WECHAT_OFFICE_APPSECRET = "55991e0d8d9294fa6f21b70513837682";
 //    public static String MANAGER_URL = "http://xunmigl.hi528.cn/";
 
-    public static String CHENGFUTONGID_WECHAT = "68018059461601";
-    public static String CHENGFUTONGKEY_WECHAT = "0468091218061lCrSAlt";
-    public static String CHENGFUTONGID_ALIPAY = "68018059461602";
-    public static String CHENGFUTONGKEY_ALIPAY = "046809165939UMJJ1psU";
+    public static String CHENGFUTONGID_WECHAT = "0";
+    public static String CHENGFUTONGKEY_WECHAT = "0";
+    public static String CHENGFUTONGID_ALIPAY = "0";
+    public static String CHENGFUTONGKEY_ALIPAY = "0";
 
 //    //抚顺
 //    public static String WECHAT_APPID = "wxf6c90cc17ad523b2";                       //appid
@@ -227,8 +227,8 @@ public class Constants {
     public static String ALIPAY_PUBLIC_KEY = "";
     public static String ALIPAY_NOTIFY_URL = "";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "wxc3da2d6ab990279f";
-    public static String WECHAT_OFFICE_APPSECRET = "b5859d927f9fc396a519d5efa913c39a";
+    public static String WECHAT_OFFICE_APPID = "wx2e2ed60d452f486c";
+    public static String WECHAT_OFFICE_APPSECRET = "0c5b7ec50c72f584b8dfa348db7250cf";
     public static String MANAGER_URL = "http://gl.dcpnm.com/";
 
 }

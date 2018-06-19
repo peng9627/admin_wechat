@@ -21,15 +21,9 @@ public interface IUserParentAppService {
 
     void lastDayRebate();
 
-    List<Integer> userIds();
+    List<UserParent> allUserParent();
 
     List<Integer> daqu();
 
-    List<UserParent> byParentId(Integer userId);
-
-    List<UserParent> allUserParent();
-
-    void addCommission(Integer parentId, BigDecimal commission);
-
-    void addAllCommission(Map<String, BigDecimal> updateCommands);
+    void addAllDaquCommission(Map<String, BigDecimal> updateCommands);
 }
