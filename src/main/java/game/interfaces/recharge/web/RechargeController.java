@@ -18,7 +18,9 @@ import game.core.common.Constants;
 import game.core.enums.PayType;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoLoginException;
+import game.core.pay.ChengfutongRecharge;
 import game.core.pay.wechat.*;
+import game.core.util.CoreDateUtils;
 import game.core.util.CoreHttpUtils;
 import game.domain.model.recharge.Recharge;
 import game.interfaces.shared.web.BaseController;
@@ -191,6 +193,132 @@ public class RechargeController extends BaseController {
             jsonMessage.setCode(1);
             jsonMessage.setMessage("下单失败");
             return jsonMessage;
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_wechat_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongWechatRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.WECHAT);
+            Recharge recharge = rechargeAppService.recharge(command);
+//            Recharge recharge = new Recharge("zf00" + new Random().nextInt(10000), command.getUserId(), BigDecimal.valueOf(10), YesOrNoStatus.NO, PayType.WECHAT, command.getId());
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("WXZFWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("3");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signset();
+            if (null != command.getPayType()) {
+                return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+            }
+            return new ModelAndView("/fail", "message", "支付失败");
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_qq_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongQQRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.ALL);
+            Recharge recharge = rechargeAppService.recharge(command);
+
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("QQWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("1");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signset();
+            return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_alipay_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongAlipayRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.ALIPAY);
+            Recharge recharge = rechargeAppService.recharge(command);
+
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_ALIPAY);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("ZFBZZWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("1");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signZZset();
+            return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
         }
     }
 }

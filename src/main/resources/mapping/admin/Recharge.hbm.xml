@@ -37,5 +37,9 @@
         <property name="selectId" column="select_id" type="java.lang.String"/>
 
         <property name="notifyTime" column="notify_time" type="java.util.Date"/>
+
+        <property name="beforeCard" column="before_card" type="java.lang.Integer"/>
+
+        <property name="beforeGold" column="before_gold" type="java.lang.Integer"/>
     </class>
 </hibernate-mapping>

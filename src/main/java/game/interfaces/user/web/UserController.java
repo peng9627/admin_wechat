@@ -152,12 +152,12 @@ public class UserController extends BaseApiController {
                 notsave = false;
             } catch (Exception e) {
                 i++;
-                System.out.println("返利错误重新返利" + i);
+                logger.error("返利错误重新返利" + i, e);
             }
             if (i >= 100) {
                 jsonMessage.setData(1);
                 notsave = false;
-                logger.error("返利数据", jsonArray);
+                logger.error("返利数据" + jsonArray);
             }
         }
 
