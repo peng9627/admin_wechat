@@ -214,7 +214,7 @@ public class RechargeController extends BaseController {
             chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
             chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
             chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
-            chengfutongRecharge.setP7_productcode("WXZFWAP");
+            chengfutongRecharge.setP7_productcode("WXZZWAPZZSM");
             chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
             chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
             chengfutongRecharge.setP25_terminal("3");
@@ -302,7 +302,7 @@ public class RechargeController extends BaseController {
             chengfutongRecharge.setP7_productcode("ZFBZZWAP");
             chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
             chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
-            chengfutongRecharge.setP25_terminal("1");
+            chengfutongRecharge.setP25_terminal("3");
             String client = CoreHttpUtils.getLoginPlatform(request);
             if (null != client) {
                 if (client.equals("Android")) {

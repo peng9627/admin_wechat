@@ -179,16 +179,16 @@ public class Constants {
 
 
 
-    public static String CHENGFUTONGID_WECHAT = "68018059461601";
-    public static String CHENGFUTONGKEY_WECHAT = "0468091218061lCrSAlt";
-    public static String CHENGFUTONGID_ALIPAY = "68018059461602";
-    public static String CHENGFUTONGKEY_ALIPAY = "046809165939UMJJ1psU";
+    public static String CHENGFUTONGID_WECHAT = "68018065474602";
+    public static String CHENGFUTONGKEY_WECHAT = "046809142654RigAK1xb";
+    public static String CHENGFUTONGID_ALIPAY = "68018065474602";
+    public static String CHENGFUTONGKEY_ALIPAY = "046809142654RigAK1xb";
 
     //华晨
     public static String WECHAT_APPID = "";                       //appid
     public static String WECHAT_KEY = "";           //微信支付key
     public static String WECHAT_APPSECRET = "";                       //appsecret
-    public static String WECHAT_NOTIFY_URL = "http://zf.dcpnm.com/api/recharge/wechat/notify";           //微信异步通知地址
+    public static String WECHAT_NOTIFY_URL = "http://zf.168cct.com/api/recharge/wechat/notify";           //微信异步通知地址
     public static String WECHAT_UNIFIED_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"; //微信请求下单统一地址
     public static String WECHAT_MCH_ID = "";
     public static String ALIPAY_APP_ID = "";
