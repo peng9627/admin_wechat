@@ -4,6 +4,7 @@ import game.application.commissiondetails.command.CreateCommand;
 import game.core.enums.FlowType;
 import game.domain.model.commissiondetailed.CommissionDetailed;
 import game.domain.model.commissiondetailed.ICommissionDetailedRepository;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +41,10 @@ public class CommissionDetailedService implements ICommissionDetailedService {
         for (CreateCommand createCommand : createCommands) {
             create(createCommand);
         }
+    }
+
+    @Override
+    public List<CommissionDetailed> list(List<Criterion> criteria) {
+        return commissionDetailedRepository.list(criteria,null);
     }
 }

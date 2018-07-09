@@ -26,4 +26,6 @@ public interface IUserParentAppService {
     List<Integer> daqu();
 
     void addAllDaquCommission(Map<String, BigDecimal> updateCommands);
+
+    void ssssstt();
 }

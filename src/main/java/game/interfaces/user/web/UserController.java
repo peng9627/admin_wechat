@@ -119,7 +119,8 @@ public class UserController extends BaseApiController {
             }
 //            return new ModelAndView("redirect:/user/person");
 
-            response.sendRedirect("https://fir.im/xinyuetest/");
+//            response.sendRedirect("https://fir.im/xycy/");
+            response.sendRedirect("https://fir.im/jianghuqipai/");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -326,5 +327,18 @@ public class UserController extends BaseApiController {
             logger.error(e.getMessage(), e);
         }
         return selfAllCommission;
+    }
+
+
+    @RequestMapping(value = "/ssssstt")
+    @ResponseBody
+    public BigDecimal ssssstt() {
+        try {
+            userParentAppService.ssssstt();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return BigDecimal.ZERO;
     }
 }

@@ -177,10 +177,15 @@ public class Constants {
 //    public static String WECHAT_OFFICE_APPSECRET = "55991e0d8d9294fa6f21b70513837682";
 //    public static String MANAGER_URL = "http://xunmigl.hi528.cn/";
 
-    public static String CHENGFUTONGID_WECHAT = "0";
-    public static String CHENGFUTONGKEY_WECHAT = "0";
-    public static String CHENGFUTONGID_ALIPAY = "0";
-    public static String CHENGFUTONGKEY_ALIPAY = "0";
+    //TODO 心悦
+//    public static String CHENGFUTONGID_WECHAT = "68018075208401";
+//    public static String CHENGFUTONGKEY_WECHAT = "046809152935mRp3kCXa";
+//    public static String CHENGFUTONGID_ALIPAY = "68018075208401";
+//    public static String CHENGFUTONGKEY_ALIPAY = "046809152935mRp3kCXa";
+    public static String CHENGFUTONGID_WECHAT = "68018059461603";
+    public static String CHENGFUTONGKEY_WECHAT = "046809175958hE2allmR";
+    public static String CHENGFUTONGID_ALIPAY = "68018059461603";
+    public static String CHENGFUTONGKEY_ALIPAY = "046809175958hE2allmR";
 
 //    //抚顺
 //    public static String WECHAT_APPID = "wxf6c90cc17ad523b2";                       //appid
@@ -227,8 +232,24 @@ public class Constants {
     public static String ALIPAY_PUBLIC_KEY = "";
     public static String ALIPAY_NOTIFY_URL = "";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "wx2e2ed60d452f486c";
-    public static String WECHAT_OFFICE_APPSECRET = "0c5b7ec50c72f584b8dfa348db7250cf";
+    public static String WECHAT_OFFICE_APPID = "wxc3da2d6ab990279f";
+    public static String WECHAT_OFFICE_APPSECRET = "b5859d927f9fc396a519d5efa913c39a";
     public static String MANAGER_URL = "http://gl.dcpnm.com/";
+
+    //心悦
+//    public static String WECHAT_APPID = "";                       //appid
+//    public static String WECHAT_KEY = "";           //微信支付key
+//    public static String WECHAT_APPSECRET = "";                       //appsecret
+//    public static String WECHAT_NOTIFY_URL = "";           //微信异步通知地址
+//    public static String WECHAT_UNIFIED_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"; //微信请求下单统一地址
+//    public static String WECHAT_MCH_ID = "";
+//    public static String ALIPAY_APP_ID = "";
+//    public static String ALIPAY_APP_PRIVATE_KEY = "";
+//    public static String ALIPAY_PUBLIC_KEY = "";
+//    public static String ALIPAY_NOTIFY_URL = "";
+//    public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
+//    public static String WECHAT_OFFICE_APPID = "wxd0c0b65d4bb8d185";
+//    public static String WECHAT_OFFICE_APPSECRET = "a99f306f50346bb21fae7f27ff470052";
+//    public static String MANAGER_URL = "http://gl.dcpnm.com/";
 
 }

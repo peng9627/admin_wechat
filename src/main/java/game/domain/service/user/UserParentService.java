@@ -5,9 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import game.application.commissiondetails.command.CreateCommand;
 import game.core.enums.FlowType;
 import game.core.pay.GameServer;
+import game.domain.model.commissiondetailed.CommissionDetailed;
 import game.domain.model.user.IUserParentRepository;
 import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,9 +81,18 @@ public class UserParentService implements IUserParentService {
     public void consumption(JSONArray jsonArray) {
         JSONArray notice = new JSONArray();
         //讯米
-        double m1 = 0.4 * 0.9 / 108;
-        double m2 = 0.12 * 0.9 / 108;
-        double m3 = 0.08 * 0.9 / 108;
+//        double m1 = 0.4 * 0.9 / 108;
+//        double m2 = 0.12 * 0.9 / 108;
+//        double m3 = 0.08 * 0.9 / 108;
+        //TODO
+        //心悦
+//        double m1 = 0.4 * 0.83 / 110;
+//        double m2 = 0.12 * 0.83 / 110;
+//        double m3 = 0.08 * 0.83 / 110;
+        //江湖3
+        double m1 = 0.4 * 0.83 * 0.98 / 100;
+        double m2 = 0.12 * 0.83 * 0.98 / 100;
+        double m3 = 0.08 * 0.83 * 0.98 / 100;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
@@ -121,7 +137,8 @@ public class UserParentService implements IUserParentService {
                 createCommand.setFlowType(FlowType.IN_FLOW);
                 createCommand.setUserId(parent);
                 createCommand.setMoney(BigDecimal.valueOf(m2).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue());
+                createCommand.setFromUser(userParent.getUserId());
                 commissionDetailedService.create(createCommand);
 
                 userParent2.setCommission(userParent2.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
@@ -136,7 +153,8 @@ public class UserParentService implements IUserParentService {
                     createCommand.setFlowType(FlowType.IN_FLOW);
                     createCommand.setUserId(parent);
                     createCommand.setMoney(BigDecimal.valueOf(m3).multiply(card).setScale(2, RoundingMode.HALF_UP));
-                    createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue() + "房卡");
+                    createCommand.setDescription(userParent.getUserId() + "消耗" + card.doubleValue());
+                    createCommand.setFromUser(userParent.getUserId());
                     commissionDetailedService.create(createCommand);
 
                     userParent3.setCommission(userParent3.getCommission().add(createCommand.getMoney()).setScale(2, RoundingMode.HALF_UP));
@@ -173,6 +191,33 @@ public class UserParentService implements IUserParentService {
         for (Map.Entry<String, BigDecimal> entry : updateCommands.entrySet()) {
             userParentRepository.addDaquCommission(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+    public void ssssstt() {
+        List<Criterion> criterionList = new ArrayList<>();
+        criterionList.add(Restrictions.like("description", "%大区%", MatchMode.ANYWHERE));
+        List<CommissionDetailed> detaileds = commissionDetailedService.list(criterionList);
+        Map<Integer, BigDecimal> userMons = new HashMap<>();
+        List<Integer> users = new ArrayList<>();
+        for (CommissionDetailed commissionDetailed:detaileds) {
+            if (!userMons.containsKey(commissionDetailed.getUser())){
+                users.add(commissionDetailed.getUser());
+                userMons.put(commissionDetailed.getUser(), BigDecimal.ZERO);
+            }
+            userMons.put(commissionDetailed.getUser(), userMons.get(commissionDetailed.getUser()).add(commissionDetailed.getMoney()));
+        }
+
+        criterionList.clear();
+        criterionList.add(Restrictions.in("userId", users));
+        List<UserParent> userParents = userParentRepository.list(criterionList, null);
+        for (UserParent userParent1:userParents) {
+                userParent1.setDaquCommission(userParent1.getDaquCommission().add(userMons.get(userParent1.getUserId())).subtract(userParent1.getDaquTotalCommission()));
+                userParent1.setDaquTotalCommission(userMons.get(userParent1.getUserId()));
+                userParentRepository.save(userParent1);
+        }
+
+        System.out.println(1);
     }
 
 }

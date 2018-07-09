@@ -72,4 +72,9 @@ public class UserParentAppService implements IUserParentAppService {
         userParentService.addAllDaquCommission(updateCommands);
     }
 
+    @Override
+    public void ssssstt() {
+        userParentService.ssssstt();
+    }
+
 }
