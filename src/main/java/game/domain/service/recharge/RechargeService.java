@@ -1,6 +1,5 @@
 package game.domain.service.recharge;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import game.application.recharge.command.CreateRechargeCommand;
 import game.application.recharge.command.ListRechargeCommand;
@@ -8,6 +7,7 @@ import game.core.common.id.IdFactory;
 import game.core.enums.YesOrNoStatus;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoFoundException;
+import game.core.pay.ChengfutongNotice;
 import game.core.pay.GameServer;
 import game.core.pay.wechat.WechatNotify;
 import game.core.util.CoreDateUtils;
@@ -285,7 +285,7 @@ public class RechargeService implements IRechargeService {
                 }
             }
             recharge.changeIsSuccess(YesOrNoStatus.NO);
-            rechargeRepository.save(recharge);
+            rechargeRepository.update(recharge);
 
 //            JSONArray jsonArray = new JSONArray();
 //            JSONObject jsonObject1 = new JSONObject();
@@ -295,6 +295,21 @@ public class RechargeService implements IRechargeService {
 //            CoreHttpUtils.urlConnection("http://127.0.0.1:8090", "jsonArray=" + jsonArray.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void apiChengfutongSuccess(ChengfutongNotice notice) {
+        Recharge recharge = this.searchByNo(notice.getP2_ordernumber());
+        if (null != recharge && null == recharge.getPayTime() && 0 != recharge.getIsSuccess().compareTo(YesOrNoStatus.YES)) {
+            recharge.changePayTime(new Date());
+            recharge.changePayNo(notice.getP5_orderid());
+            recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
+            rechargeRepository.update(recharge);
+            success(recharge);
         }
     }
 }

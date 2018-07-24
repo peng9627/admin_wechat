@@ -16,7 +16,9 @@ import game.core.common.Constants;
 import game.core.enums.PayType;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoLoginException;
+import game.core.pay.ChengfutongRecharge;
 import game.core.pay.wechat.*;
+import game.core.util.CoreDateUtils;
 import game.core.util.CoreHttpUtils;
 import game.domain.model.recharge.Recharge;
 import game.interfaces.shared.web.BaseController;
@@ -91,45 +93,6 @@ public class RechargeController extends BaseController {
                 jsonMessage.setMessage("成功");
                 jsonMessage.setCode(0);
                 jsonMessage.setData(response.getBody());
-
-//                String s = CoreHttpUtils.urlConnection("http://api.chishuicg.com/v1/main/create-order", "order_number=" + recharge.getRechargeNo() + "&order_total=" + recharge.getMoney().setScale(2, RoundingMode.HALF_UP).toString()
-//                        + "&notify_url=" + Constants.ALIPAY_NOTIFY_URL + "&body=" + recharge.getRechargeNo() + "amount" + recharge.getMoney() + "&test=11");
-//                JSONObject jsonObject = JSON.parseObject(s);
-//                if (200 == jsonObject.getIntValue("code")) {
-//                    jsonMessage.setMessage("成功");
-//                    jsonMessage.setCode(0);
-//                    jsonMessage.setData("alipay_sdk=alipay-sdk-php-20161101&app_id=2017122501209793&biz_content=%7B%22body%22%3A%22%E8%80%81%E7%8E%8B%E5%95%86%E5%9F%8E%22%2C%22subject%22%3A+%2218118909821830190%22%2C%22out_trade_no%22%3A+%2218118909821830190%22%2C%22timeout_express%22%3A+%2230m%22%2C%22total_amount%22%3A+%2226%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%7D&charset=UTF-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2F1t9439473s.iok.la%3A10338%2Fv1%2Fnotify%2Fdirect-pay&sign_type=RSA2&timestamp=2018-01-18+23%3A56%3A22&version=1.0&sign=eKmn4By5f2Z9ikFeN9iW0bp6LR7fakSlq8VLwLGxn7TK83%2BMXax6iOaPoa5TxSGgwxpT%2BImMSVgzOCFZ0A1cZCHexnZiA2bLy1QYGSLbfFJ0usoHhQyxuhskBdVJzJFni1WStZXmbOBsA7joLZAJc9gScmA%2BXUKUNN0dEV71xSFtsdhDAoTV6EmzDvqQWGmjqUtamxpNxdMYxMy3nBC3j4qf%2B%2BCyv1kEFeJZ9buWdvLsz6qruVj7oVyDH%2B%2Bw%2B%2BLhuv2%2BQGM7l4zjADU7mlBkCOmfBpcRwVttOMXPkaWWesZYU2EOm1qCRLtekzpem70MzWz72yliUCwdU1o5%2F448AQ%3D%3D");
-//                } else {
-//                    jsonMessage.setMessage("失败");
-//                    jsonMessage.setCode(1);
-//                }
-
-//                //实例化客户端
-//                AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", Constants.ALIPAY_UNIFIED_URL, Constants.ALIPAY_APP_ID, "json", "UTF-8", Constants.ALIPAY_PUBLIC_KEY, "RSA2");
-//                //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
-//                AlipayTradeAppPayRequest alipayTradeAppPayRequest = new AlipayTradeAppPayRequest();
-//                //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
-//                AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-//                model.setBody("我是测试数据");
-//                model.setSubject("App支付测试Java");
-//                model.setOutTradeNo("test12132165465416354");
-//                model.setTimeoutExpress("30m");
-//                model.setTotalAmount("0.01");
-//                model.setProductCode("QUICK_MSECURITY_PAY");
-//                alipayTradeAppPayRequest.setBizModel(model);
-//                alipayTradeAppPayRequest.setNotifyUrl(Constants.ALIPAY_NOTIFY_URL);
-//                try {
-//                    //这里和普通的接口调用不同，使用的是sdkExecute
-//                    AlipayTradeAppPayResponse response = alipayClient.sdkExecute(alipayTradeAppPayRequest);
-//                    System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
-//                    jsonMessage.setMessage("成功");
-//                    jsonMessage.setCode(0);
-//                    jsonMessage.setData(response.getBody());
-//                } catch (AlipayApiException e) {
-//                    e.printStackTrace();
-//                }
-
-
                 return jsonMessage;
             } else {
                 String body = "订单号：" + recharge.getRechargeNo();
@@ -189,6 +152,132 @@ public class RechargeController extends BaseController {
             jsonMessage.setCode(1);
             jsonMessage.setMessage("下单失败");
             return jsonMessage;
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_wechat_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongWechatRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.WECHAT);
+            Recharge recharge = rechargeAppService.recharge(command);
+//            Recharge recharge = new Recharge("zf00" + new Random().nextInt(10000), command.getUserId(), BigDecimal.valueOf(10), YesOrNoStatus.NO, PayType.WECHAT, command.getId());
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("WXZFWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("3");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signset();
+            if (null != command.getPayType()) {
+                return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+            }
+            return new ModelAndView("/fail", "message", "支付失败");
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_qq_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongQQRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.ALL);
+            Recharge recharge = rechargeAppService.recharge(command);
+
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_WECHAT);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("QQWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("1");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signset();
+            return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+    }
+
+    @RequestMapping(value = "/chengfutong_alipay_recharge")
+    @ResponseBody
+    public ModelAndView chengfutongAlipayRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.ALIPAY);
+            Recharge recharge = rechargeAppService.recharge(command);
+
+            ChengfutongRecharge chengfutongRecharge = new ChengfutongRecharge();
+            chengfutongRecharge.setP1_yingyongnum(Constants.CHENGFUTONGID_ALIPAY);
+            chengfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            chengfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            chengfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            chengfutongRecharge.setP7_productcode("ZFBZZWAP");
+            chengfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            chengfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            chengfutongRecharge.setP25_terminal("3");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    chengfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    chengfutongRecharge.setP25_terminal("2");
+                }
+            }
+            chengfutongRecharge.signZZset();
+            return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
         }
     }
 }
