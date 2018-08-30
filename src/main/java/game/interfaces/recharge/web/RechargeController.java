@@ -18,6 +18,7 @@ import game.core.enums.YesOrNoStatus;
 import game.core.exception.ApiPayException;
 import game.core.exception.NoLoginException;
 import game.core.pay.ChengfutongRecharge;
+import game.core.pay.JunfutongRecharge;
 import game.core.pay.wechat.*;
 import game.core.util.CoreDateUtils;
 import game.core.util.CoreHttpUtils;
@@ -274,6 +275,52 @@ public class RechargeController extends BaseController {
             }
             chengfutongRecharge.signZZset();
             return new ModelAndView("/cftsubmit", "info", chengfutongRecharge);
+        } catch (ApiPayException e) {
+            logger.warn(e.getMessage());
+            return new ModelAndView("/fail", "message", "超出限额");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+    }
+
+    @RequestMapping(value = "/junfutong_alipay_recharge")
+    @ResponseBody
+    public ModelAndView junfutongWechatRecharge(CreateRechargeCommand command, HttpServletRequest request) {
+
+        if (null == command.getId() || 0 == command.getUserId()) {
+            return new ModelAndView("/fail", "message", "支付失败");
+        }
+        try {
+            String ip = CoreHttpUtils.getClientIP(request);
+            command.setIp(ip);
+            command.setPayType(PayType.ALIPAY);
+            Recharge recharge = rechargeAppService.recharge(command);
+//            Recharge recharge = new Recharge("zf00" + new Random().nextInt(10000), command.getUserId(), BigDecimal.valueOf(1), YesOrNoStatus.NO, PayType.ALIPAY, command.getId());
+            JunfutongRecharge junfutongRecharge = new JunfutongRecharge();
+            junfutongRecharge.setP1_yingyongnum(Constants.JUNFUTONGID_ALIPAY);
+            junfutongRecharge.setP2_ordernumber(recharge.getRechargeNo());
+            junfutongRecharge.setP3_money(recharge.getMoney().setScale(2, RoundingMode.UP).toString());
+            junfutongRecharge.setP6_ordertime(CoreDateUtils.formatDate(recharge.getCreateDate(), "yyyyMMddhhmmss"));
+            junfutongRecharge.setP7_productcode("ZFB");
+            junfutongRecharge.setP14_customname(recharge.getUserId().toString());
+            junfutongRecharge.setP16_customip(ip.replace(".", "_"));
+            junfutongRecharge.setP25_terminal("3");
+            junfutongRecharge.setPaytype("ZZ");
+            junfutongRecharge.setP26_ext1("1.1");
+            String client = CoreHttpUtils.getLoginPlatform(request);
+            if (null != client) {
+                if (client.equals("Android")) {
+                    junfutongRecharge.setP25_terminal("3");
+                } else if (client.equals("iPhone") || client.equals("iPad") || client.equals("Mac")) {
+                    junfutongRecharge.setP25_terminal("2");
+                }
+            }
+            junfutongRecharge.signset();
+            if (null != command.getPayType()) {
+                return new ModelAndView("/jftsubmit", "info", junfutongRecharge);
+            }
+            return new ModelAndView("/fail", "message", "支付失败");
         } catch (ApiPayException e) {
             logger.warn(e.getMessage());
             return new ModelAndView("/fail", "message", "超出限额");

@@ -7,6 +7,7 @@ import game.application.recharge.representation.ApiRechargeRepresentation;
 import game.application.recharge.representation.RechargeRepresentation;
 import game.core.exception.ApiPayException;
 import game.core.pay.ChengfutongNotice;
+import game.core.pay.JunfutongNotice;
 import game.core.pay.wechat.WechatNotify;
 import game.domain.model.recharge.Recharge;
 import game.infrastructure.persistence.hibernate.generic.Pagination;
@@ -40,4 +41,6 @@ public interface IRechargeAppService {
     void alipaySuccess(Map<String, String> params);
 
     void chengfutongSuccess(ChengfutongNotice notice);
+
+    void junfutongSuccess(JunfutongNotice notice);
 }

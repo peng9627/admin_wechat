@@ -11,6 +11,7 @@ import game.core.common.Constants;
 import game.core.enums.PayType;
 import game.core.exception.ApiAuthenticationException;
 import game.core.pay.ChengfutongNotice;
+import game.core.pay.JunfutongNotice;
 import game.core.pay.wechat.Signature;
 import game.core.pay.wechat.WechatNotify;
 import game.core.pay.wechat.XMLParser;
@@ -163,6 +164,23 @@ public class ApiRechargeController extends BaseApiController {
             if (notice.signZZset()) {
                 if (notice.getP4_zfstate().equals("1")) {
                     rechargeAppService.chengfutongSuccess(notice);
+                    logger.info("充值流水号为[" + notice.getP2_ordernumber() + "]的订单支付成功，支付方式为[" + PayType.ALL + "]");
+                    response.getWriter().write("success");
+                }
+            } else {
+                logger.warn("验签失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = "/junfutong/notify")
+    public void rechargeJunfutongNotify(JunfutongNotice notice, HttpServletResponse response) {
+        try {
+            if (notice.signset()) {
+                if (notice.getP4_zfstate().equals("1")) {
+                    rechargeAppService.junfutongSuccess(notice);
                     logger.info("充值流水号为[" + notice.getP2_ordernumber() + "]的订单支付成功，支付方式为[" + PayType.ALL + "]");
                     response.getWriter().write("success");
                 }

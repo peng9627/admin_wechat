@@ -9,6 +9,7 @@ import game.core.exception.ApiPayException;
 import game.core.exception.NoFoundException;
 import game.core.pay.ChengfutongNotice;
 import game.core.pay.GameServer;
+import game.core.pay.JunfutongNotice;
 import game.core.pay.wechat.WechatNotify;
 import game.core.util.CoreDateUtils;
 import game.core.util.CoreHttpUtils;
@@ -303,6 +304,22 @@ public class RechargeService implements IRechargeService {
             recharge.changePayTime(new Date());
             recharge.changePayNo(notice.getP5_orderid());
             recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
+            rechargeRepository.update(recharge);
+            success(recharge);
+        }
+    }
+
+    @Override
+    public void apiJunfutongSuccess(JunfutongNotice notice) {
+        Recharge recharge = this.searchByNo(notice.getP2_ordernumber());
+        if (null != recharge && null == recharge.getPayTime() && 0 != recharge.getIsSuccess().compareTo(YesOrNoStatus.YES)) {
+            recharge.changePayTime(new Date());
+            recharge.changePayNo(notice.getP5_orderid());
+            recharge.changeIsSuccess(YesOrNoStatus.YES);
+            recharge.changePayNo(notice.getP5_orderid());
             User user = userService.searchByUserId(recharge.getUserId());
             recharge.setBeforeCard(user.getCard());
             recharge.setBeforeGold(user.getGold());

@@ -11,7 +11,6 @@ import game.domain.model.user.UserParent;
 import game.domain.service.commissiondetailed.ICommissionDetailedService;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +52,6 @@ public class UserParentService implements IUserParentService {
             UserParent myParent = userParentRepository.searchByUserId(parent);
             if (null != myParent) {
                 userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 2, myParent.getGroupName());
-//                Map<String, Object> map = new HashMap<>();
-//                String str = 1 + "&_&" + userId + "&_&" + 20 + "&_&" + gameServer.getKey();
-//                String enc = CoreStringUtils.md5(str, 32, false, "utf-8");
-//                map.put("manager", 1);
-//                map.put("target", userId);
-//                map.put("permission", 20);
-//                map.put("enc", enc);
-//                String result = null;
-//                try {
-//                    String s = CoreHttpUtils.urlConnection(gameServer.getUrl(), "update_permission=" + JSON.toJSONString(map));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
                 userParentRepository.save(userParent);
             }
         }
@@ -190,7 +176,10 @@ public class UserParentService implements IUserParentService {
     public void addAllDaquCommission(Map<String, BigDecimal> updateCommands) {
         for (Map.Entry<String, BigDecimal> entry : updateCommands.entrySet()) {
             userParentRepository.addDaquCommission(entry.getKey(), entry.getValue());
+            logger.warn(entry.getKey() + "返利" + entry.getValue().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
+        userParentRepository.flush();
+        logger.warn("每日大区返利保存成功");
     }
 
     @Override
@@ -200,8 +189,8 @@ public class UserParentService implements IUserParentService {
         List<CommissionDetailed> detaileds = commissionDetailedService.list(criterionList);
         Map<Integer, BigDecimal> userMons = new HashMap<>();
         List<Integer> users = new ArrayList<>();
-        for (CommissionDetailed commissionDetailed:detaileds) {
-            if (!userMons.containsKey(commissionDetailed.getUser())){
+        for (CommissionDetailed commissionDetailed : detaileds) {
+            if (!userMons.containsKey(commissionDetailed.getUser())) {
                 users.add(commissionDetailed.getUser());
                 userMons.put(commissionDetailed.getUser(), BigDecimal.ZERO);
             }
@@ -211,13 +200,14 @@ public class UserParentService implements IUserParentService {
         criterionList.clear();
         criterionList.add(Restrictions.in("userId", users));
         List<UserParent> userParents = userParentRepository.list(criterionList, null);
-        for (UserParent userParent1:userParents) {
+        for (UserParent userParent1 : userParents) {
+            if (userMons.get(userParent1.getUserId()).subtract(userParent1.getDaquTotalCommission()).compareTo(BigDecimal.ZERO) != 0) {
+                logger.warn("刷新返利" + userParent1.getUserId());
                 userParent1.setDaquCommission(userParent1.getDaquCommission().add(userMons.get(userParent1.getUserId())).subtract(userParent1.getDaquTotalCommission()));
                 userParent1.setDaquTotalCommission(userMons.get(userParent1.getUserId()));
                 userParentRepository.save(userParent1);
+            }
         }
-
-        System.out.println(1);
     }
 
 }

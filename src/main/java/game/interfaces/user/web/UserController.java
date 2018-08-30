@@ -89,36 +89,28 @@ public class UserController extends BaseApiController {
                 JSONObject jsonObject = JSON.parseObject(access_token);
                 if (jsonObject.containsKey("access_token")) {
                     String check = CoreHttpUtils.get("https://api.weixin.qq.com/sns/auth?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid"), "utf-8");
-                    System.out.println("check--------" + check);
+                    logger.info("check--------" + check);
                     JSONObject checkJson = JSON.parseObject(check);
                     if (checkJson.containsKey("errcode") && 0 == checkJson.getIntValue("errcode")) {
                         String userinfo = CoreHttpUtils.get("https://api.weixin.qq.com/sns/userinfo?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid") + "&lang=zh_CN", "utf-8");
                         userinfoJson = JSON.parseObject(userinfo);
-                        System.out.println("userinfoJson--------" + userinfo);
+                        logger.info("userinfoJson--------" + userinfo);
                     } else {
                         String refresh = CoreHttpUtils.get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + Constants.WECHAT_OFFICE_APPID + "&grant_type=refresh_token&refresh_token=" + jsonObject.getString("refresh_token"), "utf-8");
                         jsonObject = JSON.parseObject(refresh);
                         String userinfo = CoreHttpUtils.get("https://api.weixin.qq.com/sns/userinfo?access_token=" + jsonObject.getString("access_token") + "&openid=" + jsonObject.getString("openid") + "&lang=zh_CN", "utf-8");
                         userinfoJson = JSON.parseObject(userinfo);
-                        System.out.println("userinfoJson--------" + userinfo);
+                        logger.info("userinfoJson--------" + userinfo);
                     }
                 }
             }
             if (userinfoJson.containsKey("unionid")) {
                 userinfoJson.put("parent", Integer.parseInt(state));
-                userRepresentation = userAppService.loginAndBindParent(userinfoJson);
-                httpSession.setAttribute("userId", userRepresentation.getUserId());
-//                SerializerFeature[] features = new SerializerFeature[]{SerializerFeature.WriteNullListAsEmpty,
-//                        SerializerFeature.WriteMapNullValue, SerializerFeature.DisableCircularReferenceDetect,
-//                        SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullNumberAsZero,
-//                        SerializerFeature.WriteNullBooleanAsFalse};
-//                int ss = SerializerFeature.config(JSON.DEFAULT_GENERATE_FEATURE, SerializerFeature.WriteEnumUsingName, false);
-//                SocketRequest socketRequest = new SocketRequest();
-//                socketRequest.setUserId(Integer.parseInt(state));
-//                CoreHttpUtils.urlConnectionByRsa("http://127.0.0.1:10410/1", JSON.toJSONString(socketRequest, ss, features));
+                userAppService.loginAndBindParent(userinfoJson);
             }
 //            return new ModelAndView("redirect:/user/person");
 
+            //TODO
 //            response.sendRedirect("https://fir.im/xycy/");
             response.sendRedirect("https://fir.im/jianghuqipai/");
         } catch (Exception e) {
@@ -202,7 +194,13 @@ public class UserController extends BaseApiController {
             }
         }
         lastDayRebate();
-        System.out.println(System.currentTimeMillis() - a);
+        logger.info((System.currentTimeMillis() - a) + "");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ssssstt();
+            }
+        }).start();
         return jsonMessage;
     }
 
@@ -247,6 +245,7 @@ public class UserController extends BaseApiController {
                 int j = 0;
                 for (Map.Entry<String, BigDecimal> entry : updateCommands.entrySet()) {
                     maps.get(j++ % maps.size()).put(entry.getKey(), entry.getValue());
+                    logger.warn(entry.getKey() + "昨日返利数据" + entry.getValue());
                 }
 
                 for (Map<String, BigDecimal> map : maps) {
@@ -259,7 +258,7 @@ public class UserController extends BaseApiController {
                                 try {
                                     long time = System.currentTimeMillis();
                                     userParentAppService.addAllDaquCommission(map);
-                                    System.out.println("---" + (System.currentTimeMillis() - time));
+                                    logger.info("昨日返利保存成功" + (System.currentTimeMillis() - time));
                                     notsave = false;
                                 } catch (Exception e) {
                                     i++;
@@ -333,12 +332,27 @@ public class UserController extends BaseApiController {
     @RequestMapping(value = "/ssssstt")
     @ResponseBody
     public BigDecimal ssssstt() {
-        try {
-            userParentAppService.ssssstt();
-        }catch (Exception e) {
-            e.printStackTrace();
+        synchronized (this) {
+            try {
+                wait(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                userParentAppService.ssssstt();
+                notsave = false;
+            } catch (Exception e) {
+                logger.error("ssssstt失败" + i + e.getMessage(), e);
+                i++;
+            }
+            if (i >= 100) {
+                notsave = false;
+            }
+        }
         return BigDecimal.ZERO;
     }
 }

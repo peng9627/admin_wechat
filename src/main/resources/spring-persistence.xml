@@ -7,24 +7,28 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- 数据源 -->
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
         <property name="jdbcUrl" value="${jdbc.url1}"/>
-        <property name="username" value="${jdbc.username1}"/>
+        <property name="user" value="${jdbc.username1}"/>
         <property name="password" value="${jdbc.password1}"/>
-
-        <property name="idleConnectionTestPeriodInMinutes" value="${bonecp.idleConnectionTestPeriodInMinutes}"/>
-        <property name="idleMaxAgeInMinutes" value="${bonecp.idleMaxAgeInMinutes}"/>
-        <property name="maxConnectionsPerPartition" value="${bonecp.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${bonecp.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${bonecp.partitionCount}"/>
-        <property name="acquireIncrement" value="${bonecp.acquireIncrement}"/>
-        <property name="statementsCacheSize" value="${bonecp.statementsCacheSize}"/>
-        <property name="deregisterDriverOnClose" value="true"/>
+        <property name="initialPoolSize" value="${c3p0.initialPoolSize}"/>
+        <property name="minPoolSize" value="${c3p0.minPoolSize}"/>
+        <property name="maxPoolSize" value="${c3p0.maxPoolSize}"/>
+        <property name="acquireIncrement" value="${c3p0.acquireIncrement}"/>
+        <property name="maxStatements" value="${c3p0.maxStatements}"/>
+        <property name="maxStatementsPerConnection" value="${c3p0.maxStatementsPerConnection}"/>
+        <property name="maxIdleTime" value="${c3p0.maxIdleTime}"/>
+        <property name="checkoutTimeout" value="${c3p0.checkoutTimeout}"/>
+        <property name="idleConnectionTestPeriod" value="${c3p0.idleConnectionTestPeriod}"/>
+        <property name="testConnectionOnCheckout" value="${c3p0.testConnectionOnCheckout}"/>
+        <property name="preferredTestQuery" value="${c3p0.preferredTestQuery}"/>
+        <property name="acquireRetryAttempts" value="${c3p0.acquireRetryAttempts}"/>
     </bean>
 
     <!-- spring session管理器 -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+          destroy-method="destroy">
         <property name="dataSource" ref="dataSource"/>
         <property name="hibernateProperties">
             <props>
