@@ -50,7 +50,7 @@ public class UserParentService implements IUserParentService {
         UserParent userParent = userParentRepository.searchByUserId(userId);
         if (null == userParent) {
             UserParent myParent = userParentRepository.searchByUserId(parent);
-            if (null != myParent) {
+            if (null != myParent && null != myParent.getLevel() && myParent.getLevel() == 1) {
                 userParent = new UserParent(userId, parent, myParent.getB(), myParent.getA(), 2, myParent.getGroupName());
                 userParentRepository.save(userParent);
             }
@@ -72,13 +72,13 @@ public class UserParentService implements IUserParentService {
 //        double m3 = 0.08 * 0.9 / 108;
         //TODO
         //心悦
-//        double m1 = 0.4 * 0.83 / 110;
-//        double m2 = 0.12 * 0.83 / 110;
-//        double m3 = 0.08 * 0.83 / 110;
+        double m1 = 0.4 * 0.83 / 110;
+        double m2 = 0.12 * 0.83 / 110;
+        double m3 = 0.08 * 0.83 / 110;
         //江湖3
-        double m1 = 0.4 * 0.83 * 0.98 / 100;
-        double m2 = 0.12 * 0.83 * 0.98 / 100;
-        double m3 = 0.08 * 0.83 * 0.98 / 100;
+//        double m1 = 0.4 * 0.83 * 0.98 / 100;
+//        double m2 = 0.12 * 0.83 * 0.98 / 100;
+//        double m3 = 0.08 * 0.83 * 0.98 / 100;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
