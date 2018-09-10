@@ -65,9 +65,9 @@ public class UserParentService implements IUserParentService {
 
     @Override
     public void consumption(JSONArray jsonArray) {
-//        double m1 = 0.32 / 108 * 0.95;
-//        double m2 = 0.12 / 108 * 0.95;
-//        double m3 = 0.06 / 108 * 0.95;
+        double m1 = 0.32 / 108 * 0.95;
+        double m2 = 0.12 / 108 * 0.95;
+        double m3 = 0.06 / 108 * 0.95;
         //王牌
 //        double m1 = 0.36;
 //        double m2 = 0.12;
@@ -77,9 +77,9 @@ public class UserParentService implements IUserParentService {
 //        double m2 = 0.14 / 108 * 0.95;
 //        double m3 = 0.10 / 108 * 0.95;
         //youyou
-        double m1 = 0.4 / 8000;
-        double m2 = 0.14 / 8000;
-        double m3 = 0.1 / 8000;
+//        double m1 = 0.4 / 8000;
+//        double m2 = 0.14 / 8000;
+//        double m3 = 0.1 / 8000;
         JSONArray notice = new JSONArray();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);

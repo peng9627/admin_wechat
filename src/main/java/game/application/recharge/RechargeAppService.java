@@ -7,6 +7,7 @@ import game.application.recharge.representation.RechargeRepresentation;
 import game.core.exception.ApiPayException;
 import game.core.mapping.IMappingService;
 import game.core.pay.ChengfutongNotice;
+import game.core.pay.JunfutongNotice;
 import game.core.pay.wechat.WechatNotify;
 import game.domain.model.recharge.Recharge;
 import game.domain.service.recharge.IRechargeService;
@@ -96,5 +97,10 @@ public class RechargeAppService implements IRechargeAppService {
     @Override
     public void chengfutongSuccess(ChengfutongNotice notice) {
         rechargeService.apiChengfutongSuccess(notice);
+    }
+
+    @Override
+    public void junfutongSuccess(JunfutongNotice notice) {
+        rechargeService.apiJunfutongSuccess(notice);
     }
 }

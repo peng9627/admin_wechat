@@ -9,6 +9,7 @@ import game.core.exception.ApiPayException;
 import game.core.exception.NoFoundException;
 import game.core.pay.ChengfutongNotice;
 import game.core.pay.GameServer;
+import game.core.pay.JunfutongNotice;
 import game.core.pay.wechat.WechatNotify;
 import game.core.util.CoreDateUtils;
 import game.core.util.CoreHttpUtils;
@@ -40,8 +41,6 @@ import java.util.*;
 @Service("rechargeService")
 public class RechargeService implements IRechargeService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final IRechargeRepository<Recharge, String> rechargeRepository;
 
     private final IUserService userService;
@@ -50,6 +49,7 @@ public class RechargeService implements IRechargeService {
     private final GameServer gameServer;
     private final IRechargeSelectService rechargeSelectService;
     private final IUserParentService userParentService;
+    private final Logger logger = LoggerFactory.getLogger(RechargeService.class);
 
     @Autowired
     public RechargeService(IRechargeRepository<Recharge, String> rechargeRepository, IUserService userService, IdFactory idFactory, GameServer gameServer, IRechargeSelectService rechargeSelectService, IUserParentService userParentService) {
@@ -190,11 +190,6 @@ public class RechargeService implements IRechargeService {
         if (null == rechargeSelect) {
             throw new NoFoundException("id为" + command.getId() + "的记录不存在");
         }
-        BigDecimal todayTotal = rechargeRepository.todayTotal(command.getUserId());
-        //TODO 支付限额
-        if (null != todayTotal && 0 < todayTotal.add(rechargeSelect.getPrice()).compareTo(BigDecimal.valueOf(5000))) {
-            throw new ApiPayException("超出限额");
-        }
         String no = idFactory.getNextId();
         Recharge recharge = new Recharge(no, command.getUserId(), rechargeSelect.getPrice(), YesOrNoStatus.NO, command.getPayType(), command.getId());
         rechargeRepository.save(recharge);
@@ -305,6 +300,22 @@ public class RechargeService implements IRechargeService {
             recharge.changePayTime(new Date());
             recharge.changePayNo(notice.getP5_orderid());
             recharge.changeIsSuccess(YesOrNoStatus.YES);
+            User user = userService.searchByUserId(recharge.getUserId());
+            recharge.setBeforeCard(user.getCard());
+            recharge.setBeforeGold(user.getGold());
+            rechargeRepository.update(recharge);
+            success(recharge);
+        }
+    }
+
+    @Override
+    public void apiJunfutongSuccess(JunfutongNotice notice) {
+        Recharge recharge = this.searchByNo(notice.getP2_ordernumber());
+        if (null != recharge && null == recharge.getPayTime() && 0 != recharge.getIsSuccess().compareTo(YesOrNoStatus.YES)) {
+            recharge.changePayTime(new Date());
+            recharge.changePayNo(notice.getP5_orderid());
+            recharge.changeIsSuccess(YesOrNoStatus.YES);
+            recharge.changePayNo(notice.getP5_orderid());
             User user = userService.searchByUserId(recharge.getUserId());
             recharge.setBeforeCard(user.getCard());
             recharge.setBeforeGold(user.getGold());
