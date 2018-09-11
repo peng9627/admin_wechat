@@ -111,8 +111,8 @@ public class UserController extends BaseApiController {
 //            return new ModelAndView("redirect:/user/person");
 
             //TODO
-            response.sendRedirect("https://fir.im/xycy/");
-//            response.sendRedirect("https://fir.im/jianghuqipai/");
+//            response.sendRedirect("http://xyxz.wi111.cn");
+            response.sendRedirect("http://jhxz.wi111.cn");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
