@@ -72,13 +72,17 @@ public class UserParentService implements IUserParentService {
 //        double m3 = 0.08 * 0.9 / 108;
         //TODO
         //心悦
-        double m1 = 0.4 * 0.83 / 110;
-        double m2 = 0.12 * 0.83 / 110;
-        double m3 = 0.08 * 0.83 / 110;
+//        double m1 = 0.4 * 0.83 / 110;
+//        double m2 = 0.12 * 0.83 / 110;
+//        double m3 = 0.08 * 0.83 / 110;
         //江湖3
 //        double m1 = 0.4 * 0.83 * 0.98 / 100;
 //        double m2 = 0.12 * 0.83 * 0.98 / 100;
 //        double m3 = 0.08 * 0.83 * 0.98 / 100;
+        //揽胜
+        double m1 = 0.35 / 100;
+        double m2 = 0.1 / 100;
+        double m3 = 0.05 / 100;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());

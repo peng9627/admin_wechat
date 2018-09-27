@@ -112,7 +112,8 @@ public class UserController extends BaseApiController {
 
             //TODO
 //            response.sendRedirect("http://xyxz.wi111.cn");
-            response.sendRedirect("http://jhxz.wi111.cn");
+//            response.sendRedirect("http://jhxz.wi111.cn");
+            response.sendRedirect("https://fir.im/lansheng");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

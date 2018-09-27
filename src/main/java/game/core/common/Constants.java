@@ -178,14 +178,14 @@ public class Constants {
 //    public static String MANAGER_URL = "http://xunmigl.hi528.cn/";
 
     //TODO 心悦
-    public static String CHENGFUTONGID_WECHAT = "68018075208401";
-    public static String CHENGFUTONGKEY_WECHAT = "046809152935mRp3kCXa";
-    public static String CHENGFUTONGID_ALIPAY = "68018075208401";
-    public static String CHENGFUTONGKEY_ALIPAY = "046809152935mRp3kCXa";
-    public static String JUNFUTONGID_WECHAT = "01018084881301";
-    public static String JUNFUTONGKEY_WECHAT = "0401091557205DZP1VDC";
-    public static String JUNFUTONGID_ALIPAY = "01018084881301";
-    public static String JUNFUTONGKEY_ALIPAY = "0401091557205DZP1VDC";
+//    public static String CHENGFUTONGID_WECHAT = "68018075208401";
+//    public static String CHENGFUTONGKEY_WECHAT = "046809152935mRp3kCXa";
+//    public static String CHENGFUTONGID_ALIPAY = "68018075208401";
+//    public static String CHENGFUTONGKEY_ALIPAY = "046809152935mRp3kCXa";
+//    public static String JUNFUTONGID_WECHAT = "01018084881301";
+//    public static String JUNFUTONGKEY_WECHAT = "0401091557205DZP1VDC";
+//    public static String JUNFUTONGID_ALIPAY = "01018084881301";
+//    public static String JUNFUTONGKEY_ALIPAY = "0401091557205DZP1VDC";
 
     //江湖
 //    public static String CHENGFUTONGID_WECHAT = "68018059461603";
@@ -196,6 +196,17 @@ public class Constants {
 //    public static String JUNFUTONGKEY_WECHAT = "040109095655AJzxu52L";
 //    public static String JUNFUTONGID_ALIPAY = "01018086301501";
 //    public static String JUNFUTONGKEY_ALIPAY = "040109095655AJzxu52L";
+
+
+    //揽胜
+    public static String CHENGFUTONGID_WECHAT = "68018098586901";
+    public static String CHENGFUTONGKEY_WECHAT = "046809154615OWfSiEwT";
+    public static String CHENGFUTONGID_ALIPAY = "68018098586901";
+    public static String CHENGFUTONGKEY_ALIPAY = "046809154615OWfSiEwT";
+    public static String JUNFUTONGID_WECHAT = "";
+    public static String JUNFUTONGKEY_WECHAT = "";
+    public static String JUNFUTONGID_ALIPAY = "";
+    public static String JUNFUTONGKEY_ALIPAY = "";
 
 //    //抚顺
 //    public static String WECHAT_APPID = "wxf6c90cc17ad523b2";                       //appid
@@ -247,6 +258,22 @@ public class Constants {
 //    public static String MANAGER_URL = "http://gl.dcpnm.com/";
 
     //心悦
+//    public static String WECHAT_APPID = "";                       //appid
+//    public static String WECHAT_KEY = "";           //微信支付key
+//    public static String WECHAT_APPSECRET = "";                       //appsecret
+//    public static String WECHAT_NOTIFY_URL = "";           //微信异步通知地址
+//    public static String WECHAT_UNIFIED_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"; //微信请求下单统一地址
+//    public static String WECHAT_MCH_ID = "";
+//    public static String ALIPAY_APP_ID = "";
+//    public static String ALIPAY_APP_PRIVATE_KEY = "";
+//    public static String ALIPAY_PUBLIC_KEY = "";
+//    public static String ALIPAY_NOTIFY_URL = "";
+//    public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
+//    public static String WECHAT_OFFICE_APPID = "wxd0c0b65d4bb8d185";
+//    public static String WECHAT_OFFICE_APPSECRET = "a99f306f50346bb21fae7f27ff470052";
+//    public static String MANAGER_URL = "http://gl.dcpnm.com/";
+
+    //揽胜
     public static String WECHAT_APPID = "";                       //appid
     public static String WECHAT_KEY = "";           //微信支付key
     public static String WECHAT_APPSECRET = "";                       //appsecret
@@ -258,8 +285,7 @@ public class Constants {
     public static String ALIPAY_PUBLIC_KEY = "";
     public static String ALIPAY_NOTIFY_URL = "";
     public static String ALIPAY_UNIFIED_URL = "https://openapi.alipay.com/gateway.do";
-    public static String WECHAT_OFFICE_APPID = "wxd0c0b65d4bb8d185";
-    public static String WECHAT_OFFICE_APPSECRET = "a99f306f50346bb21fae7f27ff470052";
+    public static String WECHAT_OFFICE_APPID = "wx0bc132b7d3db914f";
+    public static String WECHAT_OFFICE_APPSECRET = "8e60c8dd045832db21afdf70dab94de9";
     public static String MANAGER_URL = "http://gl.dcpnm.com/";
-
 }
