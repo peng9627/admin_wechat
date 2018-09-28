@@ -77,4 +77,9 @@ public class UserParentAppService implements IUserParentAppService {
         userParentService.ssssstt();
     }
 
+    @Override
+    public void externalConsumption(JSONArray jsonArray) {
+        userParentService.externalConsumption(jsonArray);
+    }
+
 }

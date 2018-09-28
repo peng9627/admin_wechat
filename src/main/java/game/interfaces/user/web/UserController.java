@@ -113,7 +113,8 @@ public class UserController extends BaseApiController {
             //TODO
 //            response.sendRedirect("http://xyxz.wi111.cn");
 //            response.sendRedirect("http://jhxz.wi111.cn");
-            response.sendRedirect("https://fir.im/lansheng");
+//            response.sendRedirect("https://fir.im/lansheng");
+            response.sendRedirect("https://fir.im/yile");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -167,6 +168,31 @@ public class UserController extends BaseApiController {
                 jsonMessage.setData(1);
                 notsave = false;
                 logger.error("返利数据", jsonArray);
+            }
+        }
+
+        return jsonMessage;
+    }
+
+    @RequestMapping(value = "/external_consumption")
+    @ResponseBody
+    public JsonMessage externalConsumption(String jsonArray) {
+        JsonMessage jsonMessage = new JsonMessage();
+        boolean notsave = true;
+        int i = 0;
+        while (notsave) {
+            try {
+                jsonMessage.setCode(0);
+                userParentAppService.externalConsumption(JSON.parseArray(jsonArray));
+                notsave = false;
+            } catch (Exception e) {
+                i++;
+                logger.error("外部返利错误重新返利" + i, e);
+            }
+            if (i >= 100) {
+                jsonMessage.setData(1);
+                notsave = false;
+                logger.error("外部返利数据", jsonArray);
             }
         }
 

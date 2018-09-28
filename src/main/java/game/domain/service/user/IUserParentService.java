@@ -29,4 +29,6 @@ public interface IUserParentService {
     void addAllDaquCommission(Map<String, BigDecimal> updateCommands);
 
     void ssssstt();
+
+    void externalConsumption(JSONArray jsonArray);
 }

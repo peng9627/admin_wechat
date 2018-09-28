@@ -36,13 +36,15 @@ public class UserParentService implements IUserParentService {
     private final ICommissionDetailedService commissionDetailedService;
     private final IUserConsumptionService userConsumptionService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final IUserExternalConsumptionService userExternalConsumptionService;
 
     @Autowired
-    public UserParentService(IUserParentRepository<UserParent, String> userParentRepository, GameServer gameServer, ICommissionDetailedService commissionDetailedService, IUserConsumptionService userConsumptionService) {
+    public UserParentService(IUserParentRepository<UserParent, String> userParentRepository, GameServer gameServer, ICommissionDetailedService commissionDetailedService, IUserConsumptionService userConsumptionService, IUserExternalConsumptionService userExternalConsumptionService) {
         this.userParentRepository = userParentRepository;
         this.gameServer = gameServer;
         this.commissionDetailedService = commissionDetailedService;
         this.userConsumptionService = userConsumptionService;
+        this.userExternalConsumptionService = userExternalConsumptionService;
     }
 
     @Override
@@ -80,9 +82,13 @@ public class UserParentService implements IUserParentService {
 //        double m2 = 0.12 * 0.83 * 0.98 / 100;
 //        double m3 = 0.08 * 0.83 * 0.98 / 100;
         //揽胜
-        double m1 = 0.35 / 100;
-        double m2 = 0.1 / 100;
-        double m3 = 0.05 / 100;
+//        double m1 = 0.35 / 100;
+//        double m2 = 0.1 / 100;
+//        double m3 = 0.05 / 100;
+        //亦乐
+        double m1 = 0.42 * 0.83 / 110;
+        double m2 = 0.12 * 0.83 / 110;
+        double m3 = 0.06 * 0.83 / 110;
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
@@ -211,6 +217,15 @@ public class UserParentService implements IUserParentService {
                 userParent1.setDaquTotalCommission(userMons.get(userParent1.getUserId()));
                 userParentRepository.save(userParent1);
             }
+        }
+    }
+
+    @Override
+    public void externalConsumption(JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
+            userExternalConsumptionService.add(jsonObject.getIntValue("userId"), card);
         }
     }
 
