@@ -224,7 +224,7 @@ public class UserParentService implements IUserParentService {
     public void externalConsumption(JSONArray jsonArray) {
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(2, RoundingMode.HALF_UP).doubleValue());
+            BigDecimal card = BigDecimal.valueOf(BigDecimal.valueOf(jsonObject.getFloatValue("card")).setScale(0, RoundingMode.HALF_DOWN).doubleValue());
             userExternalConsumptionService.add(jsonObject.getIntValue("userId"), card);
         }
     }

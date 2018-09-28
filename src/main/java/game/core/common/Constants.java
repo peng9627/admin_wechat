@@ -209,14 +209,14 @@ public class Constants {
 //    public static String JUNFUTONGKEY_ALIPAY = "";
 
     //亦乐
-    public static String CHENGFUTONGID_WECHAT = "";
-    public static String CHENGFUTONGKEY_WECHAT = "";
-    public static String CHENGFUTONGID_ALIPAY = "";
-    public static String CHENGFUTONGKEY_ALIPAY = "";
-    public static String JUNFUTONGID_WECHAT = "";
-    public static String JUNFUTONGKEY_WECHAT = "";
-    public static String JUNFUTONGID_ALIPAY = "";
-    public static String JUNFUTONGKEY_ALIPAY = "";
+    public static String CHENGFUTONGID_WECHAT = "68018075208401";
+    public static String CHENGFUTONGKEY_WECHAT = "046809152935mRp3kCXa";
+    public static String CHENGFUTONGID_ALIPAY = "68018075208401";
+    public static String CHENGFUTONGKEY_ALIPAY = "046809152935mRp3kCXa";
+    public static String JUNFUTONGID_WECHAT = "01018084881301";
+    public static String JUNFUTONGKEY_WECHAT = "0401091557205DZP1VDC";
+    public static String JUNFUTONGID_ALIPAY = "01018084881301";
+    public static String JUNFUTONGKEY_ALIPAY = "0401091557205DZP1VDC";
 
 //    //抚顺
 //    public static String WECHAT_APPID = "wxf6c90cc17ad523b2";                       //appid
